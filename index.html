@@ -19,10 +19,10 @@
     .btn-brand:hover { background-color: #5D3A53; }
     .skill-pill { background: #F3F4F6; color: #4B5563; padding: 2px 8px; font-size: 10px; font-weight: 700; border: 1px solid #E5E7EB; text-transform: uppercase; }
     
-    /* Formatting for multi-line text */
-    .formatted-text { line-height: 1.7; font-size: 0.95rem; }
-    .formatted-text ul { list-style-type: disc; margin-left: 1.5rem; margin-top: 0.5rem; margin-bottom: 0.5rem; }
-    .formatted-text li { margin-bottom: 0.5rem; }
+    /* Strict Line-by-Line Formatting */
+    .formatted-text { line-height: 1.8; font-size: 0.95rem; white-space: normal; }
+    .formatted-text ul { list-style-type: disc; margin-left: 1.5rem; margin-top: 0.75rem; margin-bottom: 0.75rem; }
+    .formatted-text li { margin-bottom: 0.6rem; padding-left: 0.25rem; }
     .formatted-text p { margin-bottom: 1rem; }
 
     th { font-size: 10px; font-weight: 800; text-transform: uppercase; background: #F9FAFB; padding: 12px; border-bottom: 2px solid #E5E7EB; white-space: nowrap; }
@@ -38,25 +38,28 @@
   <div id="loader" class="fixed inset-0 bg-white z-[999] flex flex-col items-center justify-center p-6 text-center">
     <div id="loader-icon" class="w-10 h-10 border-4 border-gray-100 border-t-[#714B67] animate-spin mb-4"></div>
     <div id="loader-content">
-      <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest animate-pulse-slow">Syncing with Raveone Database...</p>
+      <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest animate-pulse-slow">Connecting to Database...</p>
     </div>
     <div id="connection-error" class="hidden-view max-w-md w-full">
       <div class="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6"><i data-lucide="alert-circle" class="w-8 h-8"></i></div>
       <h2 class="text-xl font-black text-gray-900 mb-2 uppercase tracking-tight">Sync Failed</h2>
-      <p id="error-message" class="text-sm text-gray-500 mb-8">The portal cannot reach the recruitment backend.</p>
       <button onclick="location.reload()" class="btn-brand px-8 py-3 text-[10px] shadow-xl shadow-brand/20">Retry Connection</button>
     </div>
   </div>
 
   <!-- NAVBAR -->
   <nav class="bg-brand text-white sticky top-0 z-50 shadow-md">
-    <div class="max-w-7xl mx-auto px-6 h-16 flex justify-between items-center">
-      <div class="flex items-center gap-3 font-extrabold cursor-pointer" onclick="switchView('public-list')">
-        <i data-lucide="briefcase" class="w-5 h-5"></i><span class="tracking-tighter">RAVEONE CONSULTANTS</span>
+    <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+      <div class="flex items-center gap-4 cursor-pointer" onclick="switchView('public-list')">
+        <img src="https://lh3.googleusercontent.com/sitesv/APaQ0STTMlVPCeAmcswsL9_QzZytVMPksqaIvK7QKvbxAX5EazMXVmaCdVpjA2wZzE5q5GrOQEBjwlqQapwbQbFGeL0-XuydsCPCgpVk8Ki_kE4bsoUM1wDnSNOrQS0ogMxl-idPQ17Ja8R1xPmn0RABwNvqdwM9xMAL0fe500bJfkd805cQkcsTc59IjNc=w16383" alt="Logo" class="h-12 w-auto bg-white p-1">
+        <div class="flex flex-col">
+          <span class="font-extrabold tracking-tighter text-lg leading-none">RAVEONE</span>
+          <span class="text-[10px] font-bold tracking-[0.2em] opacity-80 uppercase">Consultants</span>
+        </div>
       </div>
-      <div class="flex gap-4">
+      <div class="flex gap-6">
         <button onclick="switchView('public-list')" class="text-[11px] font-bold uppercase tracking-widest hover:text-white/70">Jobs</button>
-        <div id="admin-menu" class="hidden-view flex gap-4 border-l border-white/20 pl-4">
+        <div id="admin-menu" class="hidden-view flex gap-6 border-l border-white/20 pl-6">
           <button onclick="switchView('admin-candidates')" class="text-[11px] font-bold uppercase tracking-widest hover:text-white/70">Applicants</button>
         </div>
       </div>
@@ -113,99 +116,64 @@
     const isAdmin = urlParams.get('page') === 'admin';
 
     /**
-     * Formats plain text into HTML lists, preserving line breaks.
+     * Enhanced Formatter: Detects bullet points and manual line breaks
      */
     function formatTextToHtml(text) {
       if (!text) return '';
-      
-      // Step 1: Detect if text contains bullet characters but no actual newlines (inline bullets)
-      if (!text.includes('\n') && (text.includes('•') || text.includes(' * '))) {
-        text = text.replace(/([•\*])/g, '\n$1');
-      }
-
-      // Step 2: Split by newline
-      const lines = text.split(/\r?\n/).map(line => line.trim()).filter(line => line.length > 0);
+      // Step 1: Detect bullet points or new lines
+      const splitRegex = /\r?\n|•|-|–|\*|\s{2,}/;
+      const lines = text.split(splitRegex).map(line => line.trim()).filter(line => line.length > 0);
       
       if (lines.length > 1) {
-        return `<ul class="list-disc ml-5 space-y-2">
-          ${lines.map(line => {
-            // Remove bullet prefixes from the spreadsheet so we can use clean HTML bullets
-            const cleaned = line.replace(/^[•\-\*]\s*/, '').trim();
-            return `<li>${cleaned}</li>`;
-          }).join('')}
-        </ul>`;
+        return `<ul class="list-disc ml-5 space-y-2">${lines.map(line => `<li>${line}</li>`).join('')}</ul>`;
       }
       return `<p>${text}</p>`;
     }
 
     /**
-     * Formats a date string to DD-MM-YYYY
+     * DD-MM-YYYY Date Formatter
      */
     function formatDate(dateStr) {
-      if (!dateStr) return 'N/A';
+      if (!dateStr) return 'Recent';
       try {
         const d = new Date(dateStr);
         if (isNaN(d.getTime())) return dateStr;
         return d.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
-      } catch (e) {
-        return dateStr;
-      }
+      } catch (e) { return dateStr; }
     }
 
     /**
-     * Injects the dynamic JobPosting Schema for Google Search
-     * Optimized as per: https://developers.google.com/search/docs/appearance/structured-data/job-posting
+     * SEO Injection
      */
     function injectJobSchema(job) {
       const existing = document.getElementById('dynamic-job-schema');
       if (existing) existing.remove();
 
-      const parseSal = (s) => parseFloat(String(s).replace(/[^0-9.]/g, '')) || 0;
-      const minSal = parseSal(job.minSal);
-      const maxSal = parseSal(job.maxSal);
-
-      // We use a safe plain-text version of description for the schema
-      const plainDesc = job.description || "";
+      const minVal = parseFloat(String(job.minSal).replace(/[^0-9.]/g, '')) || 0;
+      const maxVal = parseFloat(String(job.maxSal).replace(/[^0-9.]/g, '')) || 0;
 
       const schema = {
         "@context": "https://schema.org/",
         "@type": "JobPosting",
         "title": job.title,
-        "description": plainDesc,
-        "identifier": {
-          "@type": "PropertyValue",
-          "name": job.company || "Raveone Consultants",
-          "value": job.id
-        },
+        "description": job.description + (job.requirements ? " Requirements: " + job.requirements : ""),
+        "identifier": { "@type": "PropertyValue", "name": job.company, "value": job.id },
         "datePosted": job.postedDate || new Date().toISOString().split('T')[0],
-        "validThrough": new Date(Date.now() + 1000 * 60 * 60 * 24 * 60).toISOString().split('T')[0], // 60 days
-        "employmentType": (job.type || "FULL_TIME").toUpperCase().replace(/\s/g, '_'),
+        "employmentType": "FULL_TIME",
         "hiringOrganization": {
           "@type": "Organization",
           "name": job.company || "Raveone Consultants",
-          "sameAs": "https://www.raveone.in",
+          "sameAs": "https://www.raveone.in/",
           "logo": "https://lh3.googleusercontent.com/sitesv/APaQ0STTMlVPCeAmcswsL9_QzZytVMPksqaIvK7QKvbxAX5EazMXVmaCdVpjA2wZzE5q5GrOQEBjwlqQapwbQbFGeL0-XuydsCPCgpVk8Ki_kE4bsoUM1wDnSNOrQS0ogMxl-idPQ17Ja8R1xPmn0RABwNvqdwM9xMAL0fe500bJfkd805cQkcsTc59IjNc=w16383"
         },
-        "jobLocation": {
-          "@type": "Place",
-          "address": {
-            "@type": "PostalAddress",
-            "addressLocality": job.location || "India",
-            "addressCountry": "IN"
-          }
-        }
+        "jobLocation": { "@type": "Place", "address": { "@type": "PostalAddress", "addressLocality": job.location || "India", "addressCountry": "IN" } }
       };
 
-      if (minSal > 0) {
+      if (minVal > 0) {
         schema.baseSalary = {
           "@type": "MonetaryAmount",
           "currency": "INR",
-          "value": {
-            "@type": "QuantitativeValue",
-            "minValue": minSal,
-            "maxValue": maxSal || minSal,
-            "unitText": "YEAR"
-          }
+          "value": { "@type": "QuantitativeValue", "minValue": minVal, "maxValue": maxVal || minVal, "unitText": "MONTH" }
         };
       }
 
@@ -235,12 +203,7 @@
         const response = await fetch(`${SCRIPT_URL}?action=getJobs`);
         const data = await response.json();
         document.getElementById('loader').classList.add('hidden-view');
-        if (data && !data.error) { 
-          ALL_JOBS = Array.isArray(data) ? data : []; 
-          renderPublicList(); 
-          const jobId = urlParams.get('jobId'); 
-          if (jobId) renderJobDetail(jobId); 
-        }
+        if (data && !data.error) { ALL_JOBS = Array.isArray(data) ? data : []; renderPublicList(); const jobId = urlParams.get('jobId'); if (jobId) renderJobDetail(jobId); }
       } catch (e) { handleConnectionError(e); }
     }
 
@@ -288,35 +251,22 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 bg-gray-50 p-8 mb-12 border border-gray-100">
           <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Job ID</p><p class="text-sm font-bold">${job.id}</p></div>
-          <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Title</p><p class="text-sm font-bold">${job.title}</p></div>
-          <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Location</p><p class="text-sm font-bold">${job.location}</p></div>
           <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Company</p><p class="text-sm font-bold">${job.company}</p></div>
-          
           <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Posted Date</p><p class="text-sm font-bold">${formatDate(job.postedDate)}</p></div>
           <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Category</p><p class="text-sm font-bold">${job.category || '-'}</p></div>
           <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Employment Type</p><p class="text-sm font-bold">${job.type || '-'}</p></div>
           <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Industry</p><p class="text-sm font-bold">${job.industry || '-'}</p></div>
-          
-          <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Min Experience</p><p class="text-sm font-bold">${job.minExp || '0'} Yrs</p></div>
-          <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Max Experience</p><p class="text-sm font-bold">${job.maxExp || '-'} Yrs</p></div>
-          <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Min Salary</p><p class="text-sm font-bold text-emerald-600">${job.minSal || '-'}</p></div>
-          <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Max Salary</p><p class="text-sm font-bold text-emerald-600">${job.maxSal || '-'}</p></div>
-          
+          <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Experience (Min/Max)</p><p class="text-sm font-bold">${job.minExp || '0'} - ${job.maxExp || '+'} Yrs</p></div>
+          <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Salary (Min/Max)</p><p class="text-sm font-bold text-emerald-600">${job.minSal || '-'} - ${job.maxSal || '-'}</p></div>
           <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Education</p><p class="text-sm font-bold">${job.education || '-'}</p></div>
           <div class="md:col-span-2"><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Core Skills</p><div class="flex flex-wrap gap-2">${skills}</div></div>
-          <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Number of Positions</p><p class="text-sm font-bold">${job.positions || '1'}</p></div>
+          <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Positions</p><p class="text-sm font-bold">${job.positions || '1'}</p></div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-16">
           <div class="lg:col-span-2 space-y-12">
-            <section>
-              <h3 class="text-[11px] font-black text-gray-900 uppercase tracking-widest mb-6 border-l-4 border-brand pl-3">Job Responsibilities</h3>
-              <div class="text-gray-600 formatted-text">${formatTextToHtml(job.description)}</div>
-            </section>
-            <section>
-              <h3 class="text-[11px] font-black text-gray-900 uppercase tracking-widest mb-6 border-l-4 border-brand pl-3">Requirements</h3>
-              <div class="text-gray-600 formatted-text">${formatTextToHtml(job.requirements)}</div>
-            </section>
+            <section><h3 class="text-[11px] font-black text-gray-900 uppercase tracking-widest mb-6 border-l-4 border-brand pl-3">Job Responsibilities</h3><div class="text-gray-600 formatted-text">${formatTextToHtml(job.description)}</div></section>
+            <section><h3 class="text-[11px] font-black text-gray-900 uppercase tracking-widest mb-6 border-l-4 border-brand pl-3">Requirements</h3><div class="text-gray-600 formatted-text">${formatTextToHtml(job.requirements)}</div></section>
           </div>
         </div>
       `;
@@ -347,27 +297,10 @@
     function openApplyModal(id, title) { document.getElementById('app-job-id').value = id; document.getElementById('app-job-title').value = title; document.getElementById('modal-apply').classList.remove('hidden-view'); }
     function closeApplyModal() { document.getElementById('modal-apply').classList.add('hidden-view'); document.getElementById('form-apply').reset(); }
     function switchView(id) { document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden-view')); document.getElementById('view-' + id).classList.remove('hidden-view'); if (id === 'admin-candidates') fetchCandidates(); window.scrollTo(0, 0); }
-    
-    document.getElementById('form-apply').onsubmit = function(e) { 
-      e.preventDefault(); 
-      const btn = document.getElementById('submit-btn'); 
-      btn.innerText = "UPLOADING..."; btn.disabled = true; 
-      const file = document.getElementById('resume-file').files[0]; 
-      const reader = new FileReader();
-      reader.onload = async function(f) { 
-        const payload = { resumeBase64: f.target.result }; 
-        new FormData(e.target).forEach((v, k) => payload[k] = v); 
-        payload.jobId = document.getElementById('app-job-id').value; 
-        payload.jobTitle = document.getElementById('app-job-title').value;
-        try { 
-          const response = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) }); 
-          const res = await response.json(); 
-          if (res.success) { alert("Application submitted successfully!"); closeApplyModal(); } 
-        } catch (err) { alert("Failed to submit. Please try again."); } 
-        finally { btn.innerText = "Submit Application"; btn.disabled = false; } 
-      };
-      if (file) reader.readAsDataURL(file); 
-    };
+    document.getElementById('form-apply').onsubmit = function(e) { e.preventDefault(); const btn = document.getElementById('submit-btn'); btn.innerText = "UPLOADING..."; btn.disabled = true; const file = document.getElementById('resume-file').files[0]; const reader = new FileReader();
+      reader.onload = async function(f) { const payload = { resumeBase64: f.target.result }; new FormData(e.target).forEach((v, k) => payload[k] = v); payload.jobId = document.getElementById('app-job-id').value; payload.jobTitle = document.getElementById('app-job-title').value;
+        try { const response = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) }); const res = await response.json(); if (res.success) { alert("Success!"); closeApplyModal(); } } catch (err) { alert("Failed"); } finally { btn.innerText = "Submit Application"; btn.disabled = false; } };
+      if (file) reader.readAsDataURL(file); };
   </script>
 </body>
 </html>
