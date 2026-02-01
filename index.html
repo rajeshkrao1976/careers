@@ -4,6 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Careers | Raveone Consultants</title>
+  
+  <!-- SEO & Brand Assets -->
+  <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/sitesv/APaQ0STTMlVPCeAmcswsL9_QzZytVMPksqaIvK7QKvbxAX5EazMXVmaCdVpjA2wZzE5q5GrOQEBjwlqQapwbQbFGeL0-XuydsCPCgpVk8Ki_kE4bsoUM1wDnSNOrQS0ogMxl-idPQ17Ja8R1xPmn0RABwNvqdwM9xMAL0fe500bJfkd805cQkcsTc59IjNc=w16383">
+  <meta property="og:title" content="Raveone Consultants Careers">
+  <meta property="og:image" content="https://lh3.googleusercontent.com/sitesv/APaQ0STTMlVPCeAmcswsL9_QzZytVMPksqaIvK7QKvbxAX5EazMXVmaCdVpjA2wZzE5q5GrOQEBjwlqQapwbQbFGeL0-XuydsCPCgpVk8Ki_kE4bsoUM1wDnSNOrQS0ogMxl-idPQ17Ja8R1xPmn0RABwNvqdwM9xMAL0fe500bJfkd805cQkcsTc59IjNc=w16383">
+  <meta name="twitter:card" content="summary_large_image">
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
@@ -38,7 +45,8 @@
   <div id="loader" class="fixed inset-0 bg-white z-[999] flex flex-col items-center justify-center p-6 text-center">
     <div id="loader-icon" class="w-10 h-10 border-4 border-gray-100 border-t-[#714B67] animate-spin mb-4"></div>
     <div id="loader-content">
-      <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest animate-pulse-slow">Connecting to Database...</p>
+      <img src="https://lh3.googleusercontent.com/sitesv/APaQ0STTMlVPCeAmcswsL9_QzZytVMPksqaIvK7QKvbxAX5EazMXVmaCdVpjA2wZzE5q5GrOQEBjwlqQapwbQbFGeL0-XuydsCPCgpVk8Ki_kE4bsoUM1wDnSNOrQS0ogMxl-idPQ17Ja8R1xPmn0RABwNvqdwM9xMAL0fe500bJfkd805cQkcsTc59IjNc=w16383" alt="Logo" class="h-12 mb-6 opacity-50 grayscale">
+      <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest animate-pulse-slow">Connecting to Raveone Database...</p>
     </div>
     <div id="connection-error" class="hidden-view max-w-md w-full">
       <div class="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6"><i data-lucide="alert-circle" class="w-8 h-8"></i></div>
@@ -49,16 +57,19 @@
 
   <!-- NAVBAR -->
   <nav class="bg-brand text-white sticky top-0 z-50 shadow-md">
-    <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+    <div class="max-w-7xl mx-auto px-6 h-24 flex justify-between items-center">
       <div class="flex items-center gap-4 cursor-pointer" onclick="switchView('public-list')">
-        <img src="https://lh3.googleusercontent.com/sitesv/APaQ0STTMlVPCeAmcswsL9_QzZytVMPksqaIvK7QKvbxAX5EazMXVmaCdVpjA2wZzE5q5GrOQEBjwlqQapwbQbFGeL0-XuydsCPCgpVk8Ki_kE4bsoUM1wDnSNOrQS0ogMxl-idPQ17Ja8R1xPmn0RABwNvqdwM9xMAL0fe500bJfkd805cQkcsTc59IjNc=w16383" alt="Logo" class="h-12 w-auto bg-white p-1">
+        <!-- Main Logo Integration -->
+        <div class="bg-white p-2 shadow-sm border border-brand/10">
+          <img src="https://lh3.googleusercontent.com/sitesv/APaQ0STTMlVPCeAmcswsL9_QzZytVMPksqaIvK7QKvbxAX5EazMXVmaCdVpjA2wZzE5q5GrOQEBjwlqQapwbQbFGeL0-XuydsCPCgpVk8Ki_kE4bsoUM1wDnSNOrQS0ogMxl-idPQ17Ja8R1xPmn0RABwNvqdwM9xMAL0fe500bJfkd805cQkcsTc59IjNc=w16383" alt="Raveone Consultants Logo" class="h-12 w-auto">
+        </div>
         <div class="flex flex-col">
-          <span class="font-extrabold tracking-tighter text-lg leading-none">RAVEONE</span>
-          <span class="text-[10px] font-bold tracking-[0.2em] opacity-80 uppercase">Consultants</span>
+          <span class="font-extrabold tracking-tighter text-2xl leading-none">RAVEONE</span>
+          <span class="text-[10px] font-bold tracking-[0.3em] opacity-80 uppercase">Consultants</span>
         </div>
       </div>
       <div class="flex gap-6">
-        <button onclick="switchView('public-list')" class="text-[11px] font-bold uppercase tracking-widest hover:text-white/70">Jobs</button>
+        <button onclick="switchView('public-list')" class="text-[11px] font-bold uppercase tracking-widest hover:text-white/70">Openings</button>
         <div id="admin-menu" class="hidden-view flex gap-6 border-l border-white/20 pl-6">
           <button onclick="switchView('admin-candidates')" class="text-[11px] font-bold uppercase tracking-widest hover:text-white/70">Applicants</button>
         </div>
@@ -111,6 +122,8 @@
 
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzW1v7m7ZkvmPNxJCn2SuYKxC98rhw1DSngtczmrt66XTjt2iEau2sfin2ekcbt-DTEWQ/exec";
+    const LOGO_URL = "https://lh3.googleusercontent.com/sitesv/APaQ0STTMlVPCeAmcswsL9_QzZytVMPksqaIvK7QKvbxAX5EazMXVmaCdVpjA2wZzE5q5GrOQEBjwlqQapwbQbFGeL0-XuydsCPCgpVk8Ki_kE4bsoUM1wDnSNOrQS0ogMxl-idPQ17Ja8R1xPmn0RABwNvqdwM9xMAL0fe500bJfkd805cQkcsTc59IjNc=w16383";
+    
     let ALL_JOBS = [];
     const urlParams = new URLSearchParams(window.location.search);
     const isAdmin = urlParams.get('page') === 'admin';
@@ -120,10 +133,8 @@
      */
     function formatTextToHtml(text) {
       if (!text) return '';
-      // Step 1: Detect bullet points or new lines
       const splitRegex = /\r?\n|•|-|–|\*|\s{2,}/;
       const lines = text.split(splitRegex).map(line => line.trim()).filter(line => line.length > 0);
-      
       if (lines.length > 1) {
         return `<ul class="list-disc ml-5 space-y-2">${lines.map(line => `<li>${line}</li>`).join('')}</ul>`;
       }
@@ -143,7 +154,7 @@
     }
 
     /**
-     * SEO Injection
+     * SEO Injection with explicit logo and org details
      */
     function injectJobSchema(job) {
       const existing = document.getElementById('dynamic-job-schema');
@@ -157,14 +168,14 @@
         "@type": "JobPosting",
         "title": job.title,
         "description": job.description + (job.requirements ? " Requirements: " + job.requirements : ""),
-        "identifier": { "@type": "PropertyValue", "name": job.company, "value": job.id },
+        "identifier": { "@type": "PropertyValue", "name": job.company || "Raveone Consultants", "value": job.id },
         "datePosted": job.postedDate || new Date().toISOString().split('T')[0],
-        "employmentType": "FULL_TIME",
+        "employmentType": (job.type || "FULL_TIME").toUpperCase().replace(/\s/g, '_'),
         "hiringOrganization": {
           "@type": "Organization",
           "name": job.company || "Raveone Consultants",
           "sameAs": "https://www.raveone.in/",
-          "logo": "https://lh3.googleusercontent.com/sitesv/APaQ0STTMlVPCeAmcswsL9_QzZytVMPksqaIvK7QKvbxAX5EazMXVmaCdVpjA2wZzE5q5GrOQEBjwlqQapwbQbFGeL0-XuydsCPCgpVk8Ki_kE4bsoUM1wDnSNOrQS0ogMxl-idPQ17Ja8R1xPmn0RABwNvqdwM9xMAL0fe500bJfkd805cQkcsTc59IjNc=w16383"
+          "logo": LOGO_URL
         },
         "jobLocation": { "@type": "Place", "address": { "@type": "PostalAddress", "addressLocality": job.location || "India", "addressCountry": "IN" } }
       };
@@ -182,6 +193,18 @@
       script.type = 'application/ld+json';
       script.text = JSON.stringify(schema);
       document.head.appendChild(script);
+
+      // Also update page metadata
+      document.title = `${job.title} | Raveone Consultants`;
+      
+      // Update Canonical Link for Google Crawler discovery
+      let canonical = document.querySelector('link[rel="canonical"]');
+      if (!canonical) {
+        canonical = document.createElement('link');
+        canonical.rel = 'canonical';
+        document.head.appendChild(canonical);
+      }
+      canonical.href = window.location.href;
     }
 
     function handleConnectionError(err) {
@@ -213,9 +236,15 @@
       if (active.length === 0) { document.getElementById('no-jobs-state').classList.remove('hidden-view'); container.innerHTML = ''; return; }
       container.innerHTML = active.map(job => `
         <div class="odoo-card p-8 flex flex-col h-full cursor-pointer group" onclick="renderJobDetail('${job.id}')">
-          <div class="flex justify-between items-start mb-6"><h3 class="text-xl font-bold text-gray-900 group-hover:text-brand transition tracking-tight">${job.title}</h3><span class="text-[9px] font-black border px-2 py-1 uppercase tracking-widest">${job.type || 'Full Time'}</span></div>
+          <div class="flex justify-between items-start mb-6">
+            <h3 class="text-xl font-bold text-gray-900 group-hover:text-brand transition tracking-tight">${job.title}</h3>
+            <span class="text-[9px] font-black border px-2 py-1 uppercase tracking-widest">${job.type || 'Full Time'}</span>
+          </div>
           <p class="text-xs text-gray-500 mb-8 font-medium flex items-center gap-1.5"><i data-lucide="map-pin" class="w-3.5 h-3.5"></i> ${job.location || 'India'}</p>
-          <div class="mt-auto flex justify-between items-center text-[9px] font-bold text-gray-400 tracking-widest uppercase border-t pt-4"><span>EXP: ${job.minExp || 0}+ YRS</span><span class="text-brand font-black flex items-center group-hover:underline">VIEW ROLE <i data-lucide="chevron-right" class="w-3 h-3 ml-0.5"></i></span></div>
+          <div class="mt-auto flex justify-between items-center text-[9px] font-bold text-gray-400 tracking-widest uppercase border-t pt-4">
+            <span>EXP: ${job.minExp || 0}+ YRS</span>
+            <span class="text-brand font-black flex items-center group-hover:underline">VIEW ROLE <i data-lucide="chevron-right" class="w-3 h-3 ml-0.5"></i></span>
+          </div>
         </div>
       `).join('');
       lucide.createIcons();
@@ -297,10 +326,27 @@
     function openApplyModal(id, title) { document.getElementById('app-job-id').value = id; document.getElementById('app-job-title').value = title; document.getElementById('modal-apply').classList.remove('hidden-view'); }
     function closeApplyModal() { document.getElementById('modal-apply').classList.add('hidden-view'); document.getElementById('form-apply').reset(); }
     function switchView(id) { document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden-view')); document.getElementById('view-' + id).classList.remove('hidden-view'); if (id === 'admin-candidates') fetchCandidates(); window.scrollTo(0, 0); }
-    document.getElementById('form-apply').onsubmit = function(e) { e.preventDefault(); const btn = document.getElementById('submit-btn'); btn.innerText = "UPLOADING..."; btn.disabled = true; const file = document.getElementById('resume-file').files[0]; const reader = new FileReader();
-      reader.onload = async function(f) { const payload = { resumeBase64: f.target.result }; new FormData(e.target).forEach((v, k) => payload[k] = v); payload.jobId = document.getElementById('app-job-id').value; payload.jobTitle = document.getElementById('app-job-title').value;
-        try { const response = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) }); const res = await response.json(); if (res.success) { alert("Success!"); closeApplyModal(); } } catch (err) { alert("Failed"); } finally { btn.innerText = "Submit Application"; btn.disabled = false; } };
-      if (file) reader.readAsDataURL(file); };
+    
+    document.getElementById('form-apply').onsubmit = function(e) { 
+      e.preventDefault(); 
+      const btn = document.getElementById('submit-btn'); 
+      btn.innerText = "UPLOADING..."; btn.disabled = true; 
+      const file = document.getElementById('resume-file').files[0]; 
+      const reader = new FileReader();
+      reader.onload = async function(f) { 
+        const payload = { resumeBase64: f.target.result }; 
+        new FormData(e.target).forEach((v, k) => payload[k] = v); 
+        payload.jobId = document.getElementById('app-job-id').value; 
+        payload.jobTitle = document.getElementById('app-job-title').value;
+        try { 
+          const response = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) }); 
+          const res = await response.json(); 
+          if (res.success) { alert("Success! Application Submitted."); closeApplyModal(); } 
+        } catch (err) { alert("Failed to submit."); } 
+        finally { btn.innerText = "Submit Application"; btn.disabled = false; } 
+      };
+      if (file) reader.readAsDataURL(file); 
+    };
   </script>
 </body>
 </html>
