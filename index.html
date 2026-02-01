@@ -24,14 +24,45 @@
     .ql-editor { min-height: 150px; }
     th { font-size: 10px; font-weight: 800; text-transform: uppercase; background: #F9FAFB; padding: 12px; border-bottom: 2px solid #E5E7EB; }
     td { font-size: 12px; padding: 12px; border-bottom: 1px solid #F3F4F6; }
+    
+    @keyframes pulse-slow {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    .animate-pulse-slow { animation: pulse-slow 3s infinite; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
-  <!-- LOADING OVERLAY -->
-  <div id="loader" class="fixed inset-0 bg-white z-[999] flex flex-col items-center justify-center">
-    <div class="w-10 h-10 border-4 border-gray-100 border-t-[#714B67] animate-spin mb-4"></div>
-    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Initialising Portal...</p>
+  <!-- LOADING / ERROR OVERLAY -->
+  <div id="loader" class="fixed inset-0 bg-white z-[999] flex flex-col items-center justify-center p-6 text-center">
+    <div id="loader-icon" class="w-10 h-10 border-4 border-gray-100 border-t-[#714B67] animate-spin mb-4"></div>
+    <div id="loader-content">
+      <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest animate-pulse-slow">Syncing with Raveone Database...</p>
+    </div>
+    
+    <!-- Connection Error Assistant -->
+    <div id="connection-error" class="hidden-view max-w-md w-full">
+      <div class="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
+        <i data-lucide="alert-circle" class="w-8 h-8"></i>
+      </div>
+      <h2 class="text-xl font-black text-gray-900 mb-2 uppercase tracking-tight">Sync Failed</h2>
+      <p id="error-message" class="text-sm text-gray-500 mb-8">The portal cannot reach the recruitment backend.</p>
+      
+      <div class="text-left bg-gray-50 p-6 space-y-4 mb-8 border border-gray-100">
+        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest border-b pb-2">Technical Check</p>
+        <div class="flex gap-3 items-start">
+          <span class="bg-brand text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center flex-shrink-0">1</span>
+          <p class="text-xs text-gray-600">Verify the Web App URL is correctly deployed in the script editor.</p>
+        </div>
+        <div class="flex gap-3 items-start">
+          <span class="bg-brand text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center flex-shrink-0">2</span>
+          <p class="text-xs text-gray-600">Ensure the <b>"Who has access"</b> setting is set to <b>"Anyone"</b>.</p>
+        </div>
+      </div>
+      
+      <button onclick="location.reload()" class="btn-brand px-8 py-3 text-[10px] shadow-xl shadow-brand/20">Retry Connection</button>
+    </div>
   </div>
 
   <!-- NAVBAR -->
@@ -44,7 +75,6 @@
       <div class="flex gap-4">
         <button onclick="switchView('public-list')" class="text-[11px] font-bold uppercase tracking-widest hover:text-white/70">Jobs</button>
         <div id="admin-menu" class="hidden-view flex gap-4 border-l border-white/20 pl-4">
-          <button onclick="switchView('admin-postings')" class="text-[11px] font-bold uppercase tracking-widest hover:text-white/70">Postings</button>
           <button onclick="switchView('admin-candidates')" class="text-[11px] font-bold uppercase tracking-widest hover:text-white/70">Applicants</button>
         </div>
       </div>
@@ -52,7 +82,6 @@
   </nav>
 
   <main class="flex-grow">
-    
     <!-- VIEW: PUBLIC LIST -->
     <section id="view-public-list" class="max-w-7xl mx-auto px-6 py-16">
       <div class="mb-12 border-b border-gray-100 pb-8">
@@ -60,6 +89,9 @@
         <p class="text-gray-500 mt-2">Browse the latest high-impact opportunities at Raveone.</p>
       </div>
       <div id="job-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+      <div id="no-jobs-state" class="hidden-view py-20 text-center border-2 border-dashed border-gray-100">
+          <p class="text-gray-400 font-medium italic">No active positions found in the database.</p>
+      </div>
     </section>
 
     <!-- VIEW: PUBLIC DETAIL -->
@@ -98,7 +130,6 @@
         </div>
       </div>
     </section>
-
   </main>
 
   <!-- MODAL: APPLY -->
@@ -135,12 +166,25 @@
   </div>
 
   <script>
+    // --- INTEGRATED WEB APP URL ---
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzW1v7m7ZkvmPNxJCn2SuYKxC98rhw1DSngtczmrt66XTjt2iEau2sfin2ekcbt-DTEWQ/exec";
+
     let ALL_JOBS = [];
-    const INITIAL_PAGE = "<?= page ?>" || 'public';
+    const urlParams = new URLSearchParams(window.location.search);
+    const isAdmin = urlParams.get('page') === 'admin';
+
+    function handleConnectionError(err) {
+      console.error(err);
+      document.getElementById('loader-icon').classList.add('hidden-view');
+      document.getElementById('loader-content').classList.add('hidden-view');
+      document.getElementById('connection-error').classList.remove('hidden-view');
+      if(err) document.getElementById('error-message').innerText = err.message || err;
+      lucide.createIcons();
+    }
 
     window.onload = function() {
       lucide.createIcons();
-      if (INITIAL_PAGE === 'admin') {
+      if (isAdmin) {
         document.getElementById('admin-menu').classList.remove('hidden-view');
         switchView('admin-candidates');
       } else {
@@ -149,19 +193,36 @@
       fetchJobs();
     };
 
-    function fetchJobs() {
-      google.script.run.withSuccessHandler(data => {
+    async function fetchJobs() {
+      try {
+        const response = await fetch(`${SCRIPT_URL}?action=getJobs`);
+        if (!response.ok) throw new Error(`HTTP Error ${response.status}`);
+        const data = await response.json();
+        
         document.getElementById('loader').classList.add('hidden-view');
         if (data && !data.error) {
-          ALL_JOBS = data;
+          ALL_JOBS = Array.isArray(data) ? data : [];
           renderPublicList();
+        } else {
+          throw new Error(data.error || "Malformed data received");
         }
-      }).getActiveJobs();
+      } catch (e) {
+        handleConnectionError(e);
+      }
     }
 
     function renderPublicList() {
       const active = ALL_JOBS.filter(j => String(j.status).toLowerCase() === 'active');
       const container = document.getElementById('job-grid');
+      const emptyState = document.getElementById('no-jobs-state');
+      
+      if (active.length === 0) {
+          emptyState.classList.remove('hidden-view');
+          container.innerHTML = '';
+          return;
+      }
+
+      emptyState.classList.add('hidden-view');
       container.innerHTML = active.map(job => `
         <div class="odoo-card p-8 flex flex-col h-full cursor-pointer group" onclick="renderJobDetail('${job.id}')">
           <div class="flex justify-between items-start mb-6">
@@ -199,25 +260,17 @@
             <button onclick="openApplyModal('${job.id}', '${job.title.replace(/'/g, "\\'")}')" class="btn-brand px-12 py-5 text-xs shadow-xl shadow-brand/10 w-full md:w-auto">Apply Now</button>
           </div>
         </div>
-
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-16">
           <div class="lg:col-span-2 space-y-12">
             <section>
               <h3 class="text-[11px] font-black text-gray-900 uppercase tracking-widest mb-6 border-l-4 border-brand pl-3">Job Description</h3>
               <div class="text-gray-600 leading-relaxed text-sm md:text-base">${job.description || 'Details available on request.'}</div>
             </section>
-            ${job.requirements ? `<section><h3 class="text-[11px] font-black text-gray-900 uppercase tracking-widest mb-6 border-l-4 border-brand pl-3">Requirements</h3><div class="text-gray-600 leading-relaxed text-sm">${job.requirements}</div></section>` : ''}
           </div>
           <div class="space-y-8">
             <div class="bg-gray-50 p-8 border border-gray-100">
               <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4">Core Competencies</h4>
               <div class="flex flex-wrap gap-2">${skills || 'Contact HR'}</div>
-            </div>
-            <div class="p-8 border border-gray-100">
-              <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Qualifications</h4>
-              <p class="text-sm font-bold text-gray-800">${job.education || 'Not Specified'}</p>
-              <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-6 mb-2">Positions</h4>
-              <p class="text-sm font-bold text-gray-800">${job.positions || '1'} Open Seat(s)</p>
             </div>
           </div>
         </div>
@@ -226,11 +279,13 @@
       lucide.createIcons();
     }
 
-    function fetchCandidates() {
+    async function fetchCandidates() {
       const table = document.getElementById('candidates-table');
       table.innerHTML = '<tr><td colspan="8" class="text-center py-12 text-gray-400 text-[10px] font-bold uppercase animate-pulse">Syncing Database...</td></tr>';
       
-      google.script.run.withSuccessHandler(data => {
+      try {
+        const response = await fetch(`${SCRIPT_URL}?action=getApplications`);
+        const data = await response.json();
         if (!data || data.length === 0) {
           table.innerHTML = '<tr><td colspan="8" class="text-center py-12 text-gray-300">No applicants found.</td></tr>';
           return;
@@ -239,7 +294,7 @@
           <tr class="hover:bg-gray-50">
             <td class="font-mono text-[10px] text-gray-400">${c.appId}</td>
             <td class="font-bold">${c.name}<br><span class="text-[10px] text-gray-400 font-normal">${c.email}</span></td>
-            <td><span class="font-semibold text-gray-700">${c.jobTitle}</span><br><span class="text-[9px] text-gray-400">${c.jobId}</span></td>
+            <td><span class="font-semibold text-gray-700">${c.jobTitle}</span></td>
             <td>${c.totalExp} / ${c.relExp} Yrs</td>
             <td class="text-emerald-700 font-bold">${c.ctc} / ${c.expCtc}</td>
             <td>${c.notice}</td>
@@ -247,7 +302,9 @@
             <td class="text-gray-400 font-bold text-[10px]">${c.date}</td>
           </tr>
         `).join('');
-      }).getApplications();
+      } catch (e) {
+        table.innerHTML = `<tr><td colspan="8" class="text-center py-12 text-red-500 font-bold">Sync Error: ${e.message}</td></tr>`;
+      }
     }
 
     function openApplyModal(id, title) {
@@ -276,22 +333,31 @@
       const file = document.getElementById('resume-file').files[0];
       const reader = new FileReader();
       
-      reader.onload = function(f) {
+      reader.onload = async function(f) {
         const payload = { resumeBase64: f.target.result };
         new FormData(e.target).forEach((v, k) => payload[k] = v);
         payload.jobId = document.getElementById('app-job-id').value;
         payload.jobTitle = document.getElementById('app-job-title').value;
 
-        google.script.run.withSuccessHandler(res => {
+        try {
+          const response = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            body: JSON.stringify(payload)
+          });
+          const res = await response.json();
           if (res.success) {
             alert("Application submitted successfully!");
             closeApplyModal();
           } else {
             alert("Error: " + res.message);
           }
+        } catch (err) {
+          alert("Submission failed. This might be due to a CORS restriction in the script deployment.");
+          console.error(err);
+        } finally {
           btn.innerText = "Submit Application";
           btn.disabled = false;
-        }).submitApplication(payload);
+        }
       };
       
       if (file) reader.readAsDataURL(file);
