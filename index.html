@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Careers | Raveone Consultants</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #F9FAFB; color: #1F2937; }
+        .bg-brand { background-color: #714B67; }
+        .text-brand { color: #714B67; }
+        .btn-brand { background-color: #714B67; color: white; transition: all 0.2s; border-radius: 4px; }
+        .btn-brand:hover { background-color: #5D3A53; }
+        .job-card { border: 1px solid #E5E7EB; background: white; transition: all 0.3s; border-radius: 12px; }
+        .job-card:hover { border-color: #714B67; transform: translateY(-2px); box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.05); }
+        #loader { position: fixed; inset: 0; background: white; z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .hidden-view { display: none !important; }
+        .step-number { width: 24px; height: 24px; background: #714B67; color: white; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; margin-right: 8px; }
+        .animate-pulse-slow { animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    </style>
+</head>
+<body>
+
+    <!-- LOADING SCREEN -->
+    <div id="loader">
+        <div class="w-10 h-10 border-4 border-gray-100 border-t-[#714B67] animate-spin rounded-full mb-4"></div>
+        <p id="loader-text" class="text-[10px] font-bold text-gray-400 uppercase tracking-widest animate-pulse-slow">Initializing Connection...</p>
+    </div>
+
+    <!-- NAVBAR -->
+    <nav class="bg-brand text-white sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 h-16 flex justify-between items-center">
+            <div class="flex items-center gap-2 font-bold cursor-pointer" onclick="window.location.search = ''">
+                <i data-lucide="briefcase" class="w-5 h-5"></i>
+                <span class="tracking-tight uppercase">Raveone Consultants</span>
+            </div>
+            <a href="https://www.raveone.in" class="text-[10px] font-bold border border-white/30 px-3 py-1.5 hover:bg-white/10 tracking-widest transition">MAIN SITE</a>
+        </div>
+    </nav>
+
+    <!-- CONTENT AREAS -->
+    <main class="max-w-6xl mx-auto p-6 md:p-12 min-h-[70vh]">
+        
+        <!-- SETUP ASSISTANT (Shows when URL is missing) -->
+        <section id="view-setup" class="hidden-view max-w-2xl mx-auto mt-10">
+            <div class="bg-white border-2 border-dashed border-gray-200 rounded-2xl p-8 md:p-12 shadow-sm">
+                <div class="text-center mb-10">
+                    <div class="w-16 h-16 bg-brand/10 text-brand rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="settings" class="w-8 h-8"></i>
+                    </div>
+                    <h2 class="text-2xl font-black text-gray-900 tracking-tight">Configuration Required</h2>
+                    <p class="text-gray-500 mt-2">The careers page is ready but needs a link to your data.</p>
+                </div>
+
+                <div class="space-y-6 text-sm text-gray-600">
+                    <div class="flex items-start">
+                        <span class="step-number">1</span>
+                        <p>Open your <b>Google Apps Script</b> editor from your spreadsheet.</p>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="step-number">2</span>
+                        <p>Click <b>Deploy</b> > <b>New Deployment</b>. Select <b>Web App</b>. Ensure "Execute as" is <b>Me</b> and "Who has access" is <b>Anyone</b>.</p>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="step-number">3</span>
+                        <p>Copy the <b>Web App URL</b> (it must end in <code>/exec</code>).</p>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="step-number">4</span>
+                        <p>Paste that URL into this Canvas code at <b>line 144</b> (replace <code>YOUR_APPS_SCRIPT_URL_HERE</code>).</p>
+                    </div>
+                </div>
+
+                <div class="mt-10 p-4 bg-gray-50 rounded-lg border border-gray-100 flex items-center gap-3">
+                    <i data-lucide="info" class="text-brand w-5 h-5"></i>
+                    <p class="text-[11px] font-medium leading-tight">Once updated, the job board will automatically load your listings.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- LIST VIEW -->
+        <section id="view-list" class="hidden-view">
+            <div class="mb-12">
+                <h2 class="text-4xl font-black text-gray-900 tracking-tight">Open Opportunities</h2>
+                <p class="text-gray-500 mt-2">Find your next challenge in engineering, sales, or consulting.</p>
+            </div>
+            <div id="job-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </section>
+
+        <!-- DETAIL VIEW -->
+        <section id="view-detail" class="hidden-view max-w-4xl mx-auto">
+            <button onclick="window.location.search = ''" class="mb-8 flex items-center text-[10px] font-bold text-gray-400 hover:text-brand tracking-widest uppercase transition">
+                <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> Back to Jobs
+            </button>
+            <div id="job-content" class="bg-white border border-gray-100 p-8 md:p-12 shadow-sm rounded-2xl"></div>
+        </section>
+    </main>
+
+    <!-- APPLICATION MODAL -->
+    <div id="modal-apply" class="fixed inset-0 z-[100] hidden-view bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-lg rounded-2xl p-8 shadow-2xl animate-in zoom-in-95 duration-200">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="font-bold text-gray-900 uppercase tracking-widest text-sm">Application Form</h3>
+                <button onclick="toggleApplyModal(false)" class="text-gray-400 hover:text-gray-600"><i data-lucide="x"></i></button>
+            </div>
+            <form id="form-apply" class="space-y-4">
+                <input type="hidden" name="jobId" id="input-job-id">
+                <input type="hidden" name="jobTitle" id="input-job-title">
+                <input name="name" placeholder="Full Name *" required class="w-full border p-3 text-sm focus:border-brand outline-none transition rounded-lg">
+                <div class="grid grid-cols-2 gap-4">
+                    <input name="email" type="email" placeholder="Email Address *" required class="border p-3 text-sm focus:border-brand outline-none transition rounded-lg">
+                    <input name="phone" placeholder="Phone Number *" required class="border p-3 text-sm focus:border-brand outline-none transition rounded-lg">
+                </div>
+                <div class="border-2 border-dashed border-gray-200 p-6 text-center rounded-lg bg-gray-50">
+                    <label class="cursor-pointer block">
+                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block">Upload Resume (PDF)</span>
+                        <input type="file" id="resume-file" accept=".pdf" required class="text-[10px] mx-auto block">
+                    </label>
+                </div>
+                <button type="submit" id="submit-btn" class="w-full btn-brand py-4 font-black text-xs tracking-widest uppercase shadow-lg shadow-brand/20">Submit Application</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-gray-100 py-12 mt-12">
+        <div class="max-w-6xl mx-auto px-6 text-center text-gray-400">
+            <p class="text-[10px] font-bold uppercase tracking-widest">© 2024 Raveone Consultants • Pan India Recruitment</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- STEP 4: PASTE YOUR GOOGLE WEB APP URL BELOW ---
+        const SCRIPT_URL = "YOUR_APPS_SCRIPT_URL_HERE"; 
+        
+        let ALL_JOBS = [];
+
+        async function init() {
+            const loaderText = document.getElementById('loader-text');
+            try {
+                // Check for placeholder URL
+                if (!SCRIPT_URL || SCRIPT_URL.includes("https://script.google.com/macros/s/AKfycbzW1v7m7ZkvmPNxJCn2SuYKxC98rhw1DSngtczmrt66XTjt2iEau2sfin2ekcbt-DTEWQ/exec")) {
+                    document.getElementById('view-setup').classList.remove('hidden-view');
+                    document.getElementById('loader').classList.add('hidden-view');
+                    lucide.createIcons();
+                    return;
+                }
+
+                loaderText.innerText = "Connecting to Database...";
+                const urlParams = new URLSearchParams(window.location.search);
+                const jobId = urlParams.get('jobId');
+
+                // Add a timeout to the fetch to prevent infinite hanging
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
+
+                const response = await fetch(`${SCRIPT_URL}?action=getJobs`, { signal: controller.signal });
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) {
+                    throw new Error(`Server returned status ${response.status}. Deployment might be restricted.`);
+                }
+
+                loaderText.innerText = "Processing Job Listings...";
+                const data = await response.json();
+                
+                if (data && data.error) {
+                    throw new Error(data.error);
+                }
+
+                ALL_JOBS = Array.isArray(data) ? data : [];
+                
+                if (jobId) {
+                    renderJobDetail(jobId);
+                } else {
+                    renderJobList();
+                }
+                
+                injectSchema(ALL_JOBS);
+                document.getElementById('loader').classList.add('hidden-view');
+            } catch (err) {
+                console.error("Initialization Error:", err);
+                document.getElementById('loader').innerHTML = `
+                    <div class="text-center p-10 bg-white shadow-2xl rounded-3xl border border-gray-100 max-w-md mx-4">
+                        <div class="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i data-lucide="alert-triangle" class="w-8 h-8"></i>
+                        </div>
+                        <h2 class="text-xl font-black text-gray-900 mb-2">Sync Failed</h2>
+                        <p class="text-sm text-gray-500 mb-6">${err.name === 'AbortError' ? 'Connection timed out. Check your internet or Script URL.' : err.message}</p>
+                        <button onclick="location.reload()" class="btn-brand px-6 py-2 text-[10px] font-bold uppercase tracking-widest">Retry Connection</button>
+                    </div>
+                `;
+                lucide.createIcons();
+            }
+        }
+
+        function renderJobList() {
+            document.getElementById('view-list').classList.remove('hidden-view');
+            const grid = document.getElementById('job-grid');
+            const activeJobs = ALL_JOBS.filter(j => String(j.status).toLowerCase() === 'active');
+
+            if (activeJobs.length === 0) {
+                grid.innerHTML = `<p class="col-span-full text-center text-gray-400 py-20 italic">No open positions found in the database.</p>`;
+                return;
+            }
+
+            grid.innerHTML = activeJobs.map(job => `
+                <div class="job-card p-8 flex flex-col h-full cursor-pointer" onclick="window.location.search = '?jobId=${job.id}'">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-[9px] font-black bg-brand/10 text-brand px-2 py-1 rounded-sm uppercase tracking-widest">${job.type || 'Full-Time'}</span>
+                        <span class="text-[9px] font-mono text-gray-300">${job.id}</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 leading-tight mb-2">${job.title}</h3>
+                    <div class="flex items-center gap-1.5 text-xs text-gray-500 mb-6 font-medium">
+                        <i data-lucide="map-pin" class="w-3.5 h-3.5 text-brand"></i> ${job.location || 'India'}
+                    </div>
+                    <div class="mt-auto flex justify-between items-center border-t border-gray-50 pt-4 text-[9px] font-bold text-gray-400 tracking-widest uppercase">
+                        <span>EXP: ${job.minExp || 0}+ YRS</span>
+                        <span class="text-brand font-black flex items-center">VIEW ROLE <i data-lucide="chevron-right" class="w-3 h-3 ml-0.5"></i></span>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function renderJobDetail(id) {
+            document.getElementById('view-detail').classList.remove('hidden-view');
+            const job = ALL_JOBS.find(j => String(j.id) === String(id));
+            if (!job) {
+                document.getElementById('job-content').innerHTML = `
+                    <div class="text-center py-20">
+                        <i data-lucide="search-x" class="w-12 h-12 text-gray-200 mx-auto mb-4"></i>
+                        <p class="text-gray-500 font-bold uppercase tracking-widest text-xs">Job ID not found</p>
+                    </div>`;
+                lucide.createIcons();
+                return;
+            }
+
+            document.getElementById('job-content').innerHTML = `
+                <div class="mb-10 pb-10 border-b border-gray-100">
+                    <div class="flex flex-col md:flex-row justify-between items-start gap-6">
+                        <div class="space-y-2">
+                            <span class="text-[10px] font-black text-brand uppercase tracking-[0.2em]">${job.company || 'Raveone Consultants'}</span>
+                            <h1 class="text-4xl font-black text-gray-900 tracking-tight">${job.title}</h1>
+                            <div class="flex flex-wrap gap-4 text-sm text-gray-500 font-medium">
+                                <span class="flex items-center gap-1"><i data-lucide="map-pin" class="w-4 h-4 text-brand"></i> ${job.location || 'India'}</span>
+                                <span class="flex items-center gap-1"><i data-lucide="clock" class="w-4 h-4 text-brand"></i> ${job.type || 'Full-Time'}</span>
+                                <span class="flex items-center gap-1"><i data-lucide="calendar" class="w-4 h-4 text-brand"></i> Posted: ${job.postedDate || 'Recent'}</span>
+                            </div>
+                        </div>
+                        <button onclick="toggleApplyModal(true, '${job.id}', '${job.title}')" class="btn-brand px-10 py-4 font-black text-xs uppercase tracking-widest shadow-xl shadow-brand/20 w-full md:w-auto">Apply Now</button>
+                    </div>
+                </div>
+                <div class="prose max-w-none text-gray-600 leading-relaxed text-sm md:text-base">
+                    ${job.description || '<p class="italic">Please contact HR for the full job description.</p>'}
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        function toggleApplyModal(show, id = '', title = '') {
+            const modal = document.getElementById('modal-apply');
+            if (show) {
+                document.getElementById('input-job-id').value = id;
+                document.getElementById('input-job-title').value = title;
+                modal.classList.remove('hidden-view');
+            } else {
+                modal.classList.add('hidden-view');
+            }
+        }
+
+        function injectSchema(jobs) {
+            jobs.filter(j => String(j.status).toLowerCase() === 'active').forEach(job => {
+                const schema = {
+                    "@context": "https://schema.org/",
+                    "@type": "JobPosting",
+                    "title": job.title,
+                    "description": job.description || "Exciting role at Raveone.",
+                    "datePosted": job.postedDate || new Date().toISOString().split('T')[0],
+                    "hiringOrganization": { "@type": "Organization", "name": job.company || "Raveone Consultants", "sameAs": "https://www.raveone.in" },
+                    "jobLocation": { "@type": "Place", "address": { "@type": "PostalAddress", "addressLocality": job.location || "India", "addressCountry": "IN" } }
+                };
+                const s = document.createElement('script');
+                s.type = 'application/ld+json';
+                s.text = JSON.stringify(schema);
+                document.head.appendChild(s);
+            });
+        }
+
+        document.getElementById('form-apply').onsubmit = function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            const originalText = btn.innerText;
+            btn.innerText = "UPLOADING..."; btn.disabled = true;
+
+            const file = document.getElementById('resume-file').files[0];
+            const reader = new FileReader();
+            reader.onload = function(f) {
+                const payload = { resumeBase64: f.target.result };
+                new FormData(e.target).forEach((v, k) => payload[k] = v);
+
+                fetch(SCRIPT_URL, { 
+                    method: 'POST', 
+                    body: JSON.stringify(payload),
+                    mode: 'no-cors' // Use no-cors for GAS POST if needed, but standard should work
+                })
+                .then(() => {
+                    // Note: 'no-cors' won't let us read the response, so we assume success if no error
+                    alert("Application sent successfully!");
+                    toggleApplyModal(false);
+                })
+                .catch(err => {
+                    alert("Submission failed. Please check your connection.");
+                    console.error(err);
+                })
+                .finally(() => { 
+                    btn.innerText = originalText; 
+                    btn.disabled = false; 
+                });
+            };
+            if(file) reader.readAsDataURL(file);
+            else { alert("Please select a PDF resume."); btn.disabled = false; btn.innerText = originalText; }
+        };
+
+        window.onload = init;
+    </script>
+</body>
+</html>
