@@ -23,9 +23,14 @@
     .skill-pill { background: #F3F4F6; color: #4B5563; padding: 2px 8px; font-size: 10px; font-weight: 700; border: 1px solid #E5E7EB; text-transform: uppercase; }
     .ql-container { font-family: 'Inter', sans-serif; }
     .ql-editor { min-height: 150px; }
-    th { font-size: 10px; font-weight: 800; text-transform: uppercase; background: #F9FAFB; padding: 12px; border-bottom: 2px solid #E5E7EB; }
+    th { font-size: 10px; font-weight: 800; text-transform: uppercase; background: #F9FAFB; padding: 12px; border-bottom: 2px solid #E5E7EB; white-space: nowrap; }
     td { font-size: 12px; padding: 12px; border-bottom: 1px solid #F3F4F6; }
     
+    /* Ensure spreadsheet line breaks are respected */
+    .formatted-text { white-space: pre-wrap; line-height: 1.7; }
+    .formatted-text ul { list-style-type: disc; margin-left: 1.25rem; }
+    .formatted-text li { margin-bottom: 0.5rem; }
+
     @keyframes pulse-slow {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.5; }
@@ -117,13 +122,13 @@
             <thead>
               <tr>
                 <th>App ID</th>
-                <th>Candidate</th>
-                <th>Role Applied</th>
-                <th>Exp (T/R)</th>
-                <th>CTC (C/E)</th>
-                <th>Notice</th>
-                <th>CV</th>
-                <th>Date</th>
+                <th>Candidate Details</th>
+                <th>Applied For</th>
+                <th>Experience</th>
+                <th>CTC Details</th>
+                <th>Notice & Location</th>
+                <th>Documents</th>
+                <th>Applied On</th>
               </tr>
             </thead>
             <tbody id="candidates-table"></tbody>
@@ -167,12 +172,24 @@
   </div>
 
   <script>
-    // --- INTEGRATED WEB APP URL ---
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzW1v7m7ZkvmPNxJCn2SuYKxC98rhw1DSngtczmrt66XTjt2iEau2sfin2ekcbt-DTEWQ/exec";
 
     let ALL_JOBS = [];
     const urlParams = new URLSearchParams(window.location.search);
     const isAdmin = urlParams.get('page') === 'admin';
+
+    /**
+     * Helper to format plain text with newlines into HTML lists
+     */
+    function formatTextToHtml(text) {
+      if (!text) return '';
+      // If it looks like it already has bullet points or multiple lines, convert to list
+      const lines = text.split('\n').filter(line => line.trim() !== '');
+      if (lines.length > 1) {
+        return `<ul>${lines.map(line => `<li>${line.replace(/^[•\-\*]\s*/, '').trim()}</li>`).join('')}</ul>`;
+      }
+      return text;
+    }
 
     function handleConnectionError(err) {
       console.error(err);
@@ -244,11 +261,7 @@
       lucide.createIcons();
     }
 
-    /**
-     * Injects the dynamic JobPosting Schema for Google Rich Results
-     */
     function injectJobSchema(job) {
-      // Remove existing schema if it exists
       const existing = document.getElementById('dynamic-job-schema');
       if (existing) existing.remove();
 
@@ -291,7 +304,6 @@
       const job = ALL_JOBS.find(j => String(j.id) === String(id));
       if (!job) return;
 
-      // Injects schema for SEO
       injectJobSchema(job);
 
       const currentUrl = new URL(window.location);
@@ -319,14 +331,18 @@
           <div class="lg:col-span-2 space-y-12">
             <section>
               <h3 class="text-[11px] font-black text-gray-900 uppercase tracking-widest mb-6 border-l-4 border-brand pl-3">Job Description</h3>
-              <div class="text-gray-600 leading-relaxed text-sm md:text-base">${job.description || 'Details available on request.'}</div>
+              <div class="text-gray-600 formatted-text text-sm md:text-base">${formatTextToHtml(job.description) || 'Details available on request.'}</div>
             </section>
-             ${job.requirements ? `<section><h3 class="text-[11px] font-black text-gray-900 uppercase tracking-widest mb-6 border-l-4 border-brand pl-3">Requirements</h3><div class="text-gray-600 text-sm leading-relaxed">${job.requirements}</div></section>` : ''}
+             ${job.requirements ? `<section><h3 class="text-[11px] font-black text-gray-900 uppercase tracking-widest mb-6 border-l-4 border-brand pl-3">Requirements</h3><div class="text-gray-600 formatted-text text-sm leading-relaxed">${formatTextToHtml(job.requirements)}</div></section>` : ''}
           </div>
           <div class="space-y-8">
             <div class="bg-gray-50 p-8 border border-gray-100">
               <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4">Core Competencies</h4>
               <div class="flex flex-wrap gap-2">${skills || 'Contact HR'}</div>
+            </div>
+            <div class="p-8 border border-gray-100">
+               <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Qualifications</h4>
+               <p class="text-sm font-bold text-gray-800">${job.education || 'Not Specified'}</p>
             </div>
           </div>
         </div>
@@ -348,16 +364,36 @@
         }
         table.innerHTML = data.map(c => `
           <tr class="hover:bg-gray-50">
-            <td class="font-mono text-[10px] text-gray-400">${c.appId}</td>
-            <td class="font-bold">${c.name}<br><span class="text-[10px] text-gray-400 font-normal">${c.email}</span></td>
-            <td><span class="font-semibold text-gray-700">${c.jobTitle}</span></td>
-            <td>${c.totalExp} / ${c.relExp} Yrs</td>
-            <td class="text-emerald-700 font-bold">${c.ctc} / ${c.expCtc}</td>
-            <td>${c.notice}</td>
-            <td><a href="${c.resume}" target="_blank" class="text-brand font-black text-[9px] hover:underline uppercase">View CV</a></td>
+            <td class="font-mono text-[10px] text-gray-400 border-r border-gray-100">${c.appId}</td>
+            <td class="border-r border-gray-100">
+              <div class="font-bold text-gray-900">${c.name}</div>
+              <div class="text-[10px] text-gray-400 font-normal">${c.email}</div>
+              <div class="text-[10px] text-brand font-medium">${c.phone}</div>
+            </td>
+            <td class="border-r border-gray-100">
+              <div class="font-semibold text-gray-700">${c.jobTitle}</div>
+              <div class="text-[9px] text-gray-400 uppercase">${c.jobId}</div>
+            </td>
+            <td class="border-r border-gray-100">
+              <div class="text-gray-600">Total: ${c.totalExp} Yrs</div>
+              <div class="text-[10px] text-gray-400">Relevant: ${c.relExp} Yrs</div>
+            </td>
+            <td class="border-r border-gray-100">
+              <div class="text-emerald-700 font-bold">Exp: ${c.expCtc}</div>
+              <div class="text-[10px] text-gray-400">Curr: ${c.ctc}</div>
+            </td>
+            <td class="border-r border-gray-100">
+              <div class="text-gray-600">${c.notice}</div>
+              <div class="text-[10px] text-gray-400 flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3"></i> ${c.location}</div>
+            </td>
+            <td class="border-r border-gray-100">
+              <a href="${c.resume}" target="_blank" class="bg-brand/10 text-brand px-3 py-1 rounded-sm font-black text-[9px] hover:bg-brand hover:text-white transition uppercase inline-block">View CV</a>
+              <div class="text-[9px] text-gray-400 mt-1 truncate max-w-[100px]">${c.education || 'No Edu Data'}</div>
+            </td>
             <td class="text-gray-400 font-bold text-[10px]">${c.date}</td>
           </tr>
         `).join('');
+        lucide.createIcons();
       } catch (e) {
         table.innerHTML = `<tr><td colspan="8" class="text-center py-12 text-red-500 font-bold">Sync Error: ${e.message}</td></tr>`;
       }
