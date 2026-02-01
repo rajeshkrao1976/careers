@@ -8,6 +8,7 @@
   <script src="https://unpkg.com/lucide@latest"></script>
   <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
   <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+  
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
     body { font-family: 'Inter', sans-serif; background-color: #FFFFFF; color: #1F2937; }
@@ -203,6 +204,10 @@
         if (data && !data.error) {
           ALL_JOBS = Array.isArray(data) ? data : [];
           renderPublicList();
+          
+          const jobId = urlParams.get('jobId');
+          if (jobId) renderJobDetail(jobId);
+          
         } else {
           throw new Error(data.error || "Malformed data received");
         }
@@ -239,9 +244,59 @@
       lucide.createIcons();
     }
 
+    /**
+     * Injects the dynamic JobPosting Schema for Google Rich Results
+     */
+    function injectJobSchema(job) {
+      // Remove existing schema if it exists
+      const existing = document.getElementById('dynamic-job-schema');
+      if (existing) existing.remove();
+
+      const schema = {
+        "@context": "https://schema.org/",
+        "@type": "JobPosting",
+        "title": job.title,
+        "description": job.description || "Exciting opportunity at Raveone Consultants.",
+        "identifier": {
+          "@type": "PropertyValue",
+          "name": job.company || "Raveone Consultants",
+          "value": job.id
+        },
+        "datePosted": job.postedDate || new Date().toISOString().split('T')[0],
+        "employmentType": (job.type || "FULL_TIME").toUpperCase().replace(/\s/g, '_'),
+        "hiringOrganization": {
+          "@type": "Organization",
+          "name": job.company || "Raveone Consultants",
+          "sameAs": "https://www.raveone.in",
+          "logo": "https://lh3.googleusercontent.com/sitesv/APaQ0STTMlVPCeAmcswsL9_QzZytVMPksqaIvK7QKvbxAX5EazMXVmaCdVpjA2wZzE5q5GrOQEBjwlqQapwbQbFGeL0-XuydsCPCgpVk8Ki_kE4bsoUM1wDnSNOrQS0ogMxl-idPQ17Ja8R1xPmn0RABwNvqdwM9xMAL0fe500bJfkd805cQkcsTc59IjNc=w16383"
+        },
+        "jobLocation": {
+          "@type": "Place",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": job.location || "India",
+            "addressCountry": "IN"
+          }
+        }
+      };
+
+      const script = document.createElement('script');
+      script.id = 'dynamic-job-schema';
+      script.type = 'application/ld+json';
+      script.text = JSON.stringify(schema);
+      document.head.appendChild(script);
+    }
+
     function renderJobDetail(id) {
       const job = ALL_JOBS.find(j => String(j.id) === String(id));
       if (!job) return;
+
+      // Injects schema for SEO
+      injectJobSchema(job);
+
+      const currentUrl = new URL(window.location);
+      currentUrl.searchParams.set('jobId', id);
+      window.history.pushState({}, '', currentUrl);
 
       const skills = job.skills ? job.skills.split(',').map(s => `<span class="skill-pill">${s.trim()}</span>`).join('') : '';
 
@@ -266,6 +321,7 @@
               <h3 class="text-[11px] font-black text-gray-900 uppercase tracking-widest mb-6 border-l-4 border-brand pl-3">Job Description</h3>
               <div class="text-gray-600 leading-relaxed text-sm md:text-base">${job.description || 'Details available on request.'}</div>
             </section>
+             ${job.requirements ? `<section><h3 class="text-[11px] font-black text-gray-900 uppercase tracking-widest mb-6 border-l-4 border-brand pl-3">Requirements</h3><div class="text-gray-600 text-sm leading-relaxed">${job.requirements}</div></section>` : ''}
           </div>
           <div class="space-y-8">
             <div class="bg-gray-50 p-8 border border-gray-100">
