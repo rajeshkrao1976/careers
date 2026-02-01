@@ -27,8 +27,8 @@
     td { font-size: 12px; padding: 12px; border-bottom: 1px solid #F3F4F6; }
     
     /* Ensure spreadsheet line breaks are respected */
-    .formatted-text { white-space: pre-wrap; line-height: 1.7; }
-    .formatted-text ul { list-style-type: disc; margin-left: 1.25rem; }
+    .formatted-text { line-height: 1.7; }
+    .formatted-text ul { list-style-type: disc; margin-left: 1.25rem; margin-top: 0.5rem; }
     .formatted-text li { margin-bottom: 0.5rem; }
 
     @keyframes pulse-slow {
@@ -179,14 +179,16 @@
     const isAdmin = urlParams.get('page') === 'admin';
 
     /**
-     * Helper to format plain text with newlines into HTML lists
+     * Enhanced Helper: Formats plain text into HTML lists, identifying lines correctly
      */
     function formatTextToHtml(text) {
       if (!text) return '';
-      // If it looks like it already has bullet points or multiple lines, convert to list
-      const lines = text.split('\n').filter(line => line.trim() !== '');
+      // Normalizing line breaks and splitting
+      const lines = text.split(/\n+/).map(line => line.trim()).filter(line => line.length > 0);
       if (lines.length > 1) {
-        return `<ul>${lines.map(line => `<li>${line.replace(/^[•\-\*]\s*/, '').trim()}</li>`).join('')}</ul>`;
+        return `<ul class="list-disc ml-5 space-y-2">
+          ${lines.map(line => `<li>${line.replace(/^[•\-\*]\s*/, '')}</li>`).join('')}
+        </ul>`;
       }
       return text;
     }
@@ -327,22 +329,41 @@
             <button onclick="openApplyModal('${job.id}', '${job.title.replace(/'/g, "\\'")}')" class="btn-brand px-12 py-5 text-xs shadow-xl shadow-brand/10 w-full md:w-auto">Apply Now</button>
           </div>
         </div>
+
+        <!-- Full Job Data Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 bg-gray-50 p-8 mb-12 border border-gray-100">
+          <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Job ID</p><p class="text-sm font-bold">${job.id}</p></div>
+          <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Posted Date</p><p class="text-sm font-bold">${job.postedDate || '-'}</p></div>
+          <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Category</p><p class="text-sm font-bold">${job.category || job.type || '-'}</p></div>
+          <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Employment Type</p><p class="text-sm font-bold">${job.type || '-'}</p></div>
+          
+          <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Industry</p><p class="text-sm font-bold">${job.industry || '-'}</p></div>
+          <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Education</p><p class="text-sm font-bold">${job.education || '-'}</p></div>
+          <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Openings</p><p class="text-sm font-bold">${job.positions || '1'}</p></div>
+          <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Location</p><p class="text-sm font-bold">${job.location || '-'}</p></div>
+          
+          <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Experience (Min)</p><p class="text-sm font-bold">${job.minExp || '0'} Yrs</p></div>
+          <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Experience (Max)</p><p class="text-sm font-bold">${job.maxExp || '-'} Yrs</p></div>
+          <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Salary (Min)</p><p class="text-sm font-bold text-emerald-600">${job.minSal || '-'}</p></div>
+          <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Salary (Max)</p><p class="text-sm font-bold text-emerald-600">${job.maxSal || '-'}</p></div>
+        </div>
+
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-16">
           <div class="lg:col-span-2 space-y-12">
             <section>
-              <h3 class="text-[11px] font-black text-gray-900 uppercase tracking-widest mb-6 border-l-4 border-brand pl-3">Job Description</h3>
+              <h3 class="text-[11px] font-black text-gray-900 uppercase tracking-widest mb-6 border-l-4 border-brand pl-3">Job Responsibilities</h3>
               <div class="text-gray-600 formatted-text text-sm md:text-base">${formatTextToHtml(job.description) || 'Details available on request.'}</div>
             </section>
-             ${job.requirements ? `<section><h3 class="text-[11px] font-black text-gray-900 uppercase tracking-widest mb-6 border-l-4 border-brand pl-3">Requirements</h3><div class="text-gray-600 formatted-text text-sm leading-relaxed">${formatTextToHtml(job.requirements)}</div></section>` : ''}
+             ${job.requirements ? `
+             <section>
+              <h3 class="text-[11px] font-black text-gray-900 uppercase tracking-widest mb-6 border-l-4 border-brand pl-3">Requirements</h3>
+              <div class="text-gray-600 formatted-text text-sm leading-relaxed">${formatTextToHtml(job.requirements)}</div>
+             </section>` : ''}
           </div>
           <div class="space-y-8">
             <div class="bg-gray-50 p-8 border border-gray-100">
               <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4">Core Competencies</h4>
               <div class="flex flex-wrap gap-2">${skills || 'Contact HR'}</div>
-            </div>
-            <div class="p-8 border border-gray-100">
-               <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Qualifications</h4>
-               <p class="text-sm font-bold text-gray-800">${job.education || 'Not Specified'}</p>
             </div>
           </div>
         </div>
