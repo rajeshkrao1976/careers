@@ -1,352 +1,427 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Careers | Raveone Consultants</title>
-  
-  <!-- SEO & Brand Assets -->
-  <link rel="icon" type="image/png" href="https://media.licdn.com/dms/image/v2/D560BAQEPjP3aKt0lyg/company-logo_200_200/B56ZU2_QxhHEAM-/0/1740384308771/hiregrow_consultants_logo?e=1771459200&v=beta&t=lB1EaAdg4Jwoj7MnO_Gsy9HmVrascy0YTLkTN2ndvUg">
-  <meta property="og:title" content="Raveone Consultants Careers">
-  <meta property="og:image" content="https://media.licdn.com/dms/image/v2/D560BAQEPjP3aKt0lyg/company-logo_200_200/B56ZU2_QxhHEAM-/0/1740384308771/hiregrow_consultants_logo?e=1771459200&v=beta&t=lB1EaAdg4Jwoj7MnO_Gsy9HmVrascy0YTLkTN2ndvUg">
-  <meta name="twitter:card" content="summary_large_image">
-
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-    body { font-family: 'Inter', sans-serif; background-color: #FFFFFF; color: #1F2937; }
-    .bg-brand { background-color: #714B67; }
-    .text-brand { color: #714B67; }
-    .border-brand { border-color: #714B67; }
-    .hidden-view { display: none !important; }
-    .odoo-card { border: 1px solid #E5E7EB; border-radius: 0px; background: #FFFFFF; transition: all 0.2s ease; }
-    .odoo-card:hover { border-color: #714B67; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-    .btn-brand { background-color: #714B67; color: white; border-radius: 0px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em; transition: all 0.2s; }
-    .btn-brand:hover { background-color: #5D3A53; }
-    .skill-pill { background: #F3F4F6; color: #4B5563; padding: 2px 8px; font-size: 10px; font-weight: 700; border: 1px solid #E5E7EB; text-transform: uppercase; }
-    
-    /* Strict Line-by-Line Formatting */
-    .formatted-text { line-height: 1.8; font-size: 0.95rem; white-space: normal; }
-    .formatted-text ul { list-style-type: disc; margin-left: 1.5rem; margin-top: 0.75rem; margin-bottom: 0.75rem; }
-    .formatted-text li { margin-bottom: 0.6rem; padding-left: 0.25rem; }
-    .formatted-text p { margin-bottom: 1rem; }
-
-    th { font-size: 10px; font-weight: 800; text-transform: uppercase; background: #F9FAFB; padding: 12px; border-bottom: 2px solid #E5E7EB; white-space: nowrap; }
-    td { font-size: 12px; padding: 12px; border-bottom: 1px solid #F3F4F6; }
-    
-    @keyframes pulse-slow { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-    .animate-pulse-slow { animation: pulse-slow 3s infinite; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hiregrow CRM | Odoo Compact Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; color: #334155; overflow: hidden; }
+        :root { --odoo-purple: #714B67; --odoo-teal: #00A09D; --odoo-border: #e2e8f0; }
+        
+        .odoo-header { background-color: var(--odoo-purple); color: white; }
+        .btn-primary { background-color: var(--odoo-teal); color: white; border-radius: 4px; padding: 4px 10px; font-weight: 600; font-size: 11px; border: none; cursor: pointer; }
+        
+        /* High Density Compact Table Styles */
+        .odoo-table thead { background-color: #f1f5f9; border-bottom: 2px solid var(--odoo-border); position: sticky; top: 0; z-index: 10; }
+        .odoo-table th { padding: 8px 10px; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; border-right: 1px solid var(--odoo-border); white-space: nowrap; color: #64748b; }
+        .odoo-table td { padding: 6px 10px; font-size: 11px; border-bottom: 1px solid #f1f5f9; white-space: nowrap; border-right: 1px solid #f8fafc; overflow: hidden; text-overflow: ellipsis; }
+        .odoo-table tr:hover { background-color: #f0fdfa; cursor: pointer; }
+        
+        .active-tab { border-bottom: 3px solid white; font-weight: 700; opacity: 1 !important; }
+        
+        #loader { 
+            display: none; 
+            position: fixed; 
+            inset: 0; 
+            background: rgba(255,255,255,0.95); 
+            z-index: 9999; 
+            align-items: center; 
+            justify-content: center; 
+            flex-direction: column; 
+        }
+        
+        .spinner { border: 2px solid #f3f3f3; border-top: 2px solid var(--odoo-teal); border-radius: 50%; width: 30px; height: 30px; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .logo-img { height: 28px; width: 28px; object-fit: contain; border-radius: 4px; background: white; }
+        
+        .modal-overlay { 
+            position: fixed; 
+            inset: 0; 
+            background-color: rgba(15, 23, 42, 0.4); 
+            backdrop-filter: blur(2px); 
+            z-index: 1000; 
+            display: none; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 1rem; 
+        }
+        .modal-overlay.open { display: flex; }
+        
+        .action-btn { padding: 0.35rem; border-radius: 0.375rem; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+        .action-btn:hover { background-color: #f1f5f9; transform: scale(1.15); }
+        
+        .breadcrumb-item:hover { color: var(--odoo-teal); cursor: pointer; text-decoration: underline; }
+        .scrollbar-hide::-webkit-scrollbar { width: 4px; height: 4px; }
+        .scrollbar-hide::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="flex flex-col h-screen overflow-hidden">
 
-  <!-- LOADING / ERROR OVERLAY -->
-  <div id="loader" class="fixed inset-0 bg-white z-[999] flex flex-col items-center justify-center p-6 text-center">
-    <div id="loader-icon" class="w-10 h-10 border-4 border-gray-100 border-t-[#714B67] animate-spin mb-4"></div>
-    <div id="loader-content">
-      <img src="https://media.licdn.com/dms/image/v2/D560BAQEPjP3aKt0lyg/company-logo_200_200/B56ZU2_QxhHEAM-/0/1740384308771/hiregrow_consultants_logo?e=1771459200&v=beta&t=lB1EaAdg4Jwoj7MnO_Gsy9HmVrascy0YTLkTN2ndvUg" alt="Logo" class="h-16 mb-6">
-      <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest animate-pulse-slow">Connecting to Raveone Database...</p>
-    </div>
-    <div id="connection-error" class="hidden-view max-w-md w-full">
-      <div class="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6"><i data-lucide="alert-circle" class="w-8 h-8"></i></div>
-      <h2 class="text-xl font-black text-gray-900 mb-2 uppercase tracking-tight">Sync Failed</h2>
-      <button onclick="location.reload()" class="btn-brand px-8 py-3 text-[10px] shadow-xl shadow-brand/20">Retry Connection</button>
-    </div>
-  </div>
-
-  <!-- NAVBAR -->
-  <nav class="bg-brand text-white sticky top-0 z-50 shadow-md">
-    <div class="max-w-7xl mx-auto px-6 h-24 flex justify-between items-center">
-      <div class="flex items-center gap-4 cursor-pointer" onclick="switchView('public-list')">
-        <!-- Main Logo Integration -->
-        <div class="bg-white p-1 shadow-sm border border-brand/10">
-          <img src="https://media.licdn.com/dms/image/v2/D560BAQEPjP3aKt0lyg/company-logo_200_200/B56ZU2_QxhHEAM-/0/1740384308771/hiregrow_consultants_logo?e=1771459200&v=beta&t=lB1EaAdg4Jwoj7MnO_Gsy9HmVrascy0YTLkTN2ndvUg" alt="Hiregrow Consultants Logo" class="h-16 w-auto">
-        </div>
-        <div class="flex flex-col">
-          <span class="font-extrabold tracking-tighter text-2xl leading-none">RAVEONE</span>
-          <span class="text-[10px] font-bold tracking-[0.3em] opacity-80 uppercase">Consultants</span>
-        </div>
-      </div>
-      <div class="flex gap-6">
-        <button onclick="switchView('public-list')" class="text-[11px] font-bold uppercase tracking-widest hover:text-white/70">Openings</button>
-        <div id="admin-menu" class="hidden-view flex gap-6 border-l border-white/20 pl-6">
-          <button onclick="switchView('admin-candidates')" class="text-[11px] font-bold uppercase tracking-widest hover:text-white/70">Applicants</button>
-        </div>
-      </div>
-    </div>
-  </nav>
-
-  <main class="flex-grow">
-    <!-- VIEW: PUBLIC LIST -->
-    <section id="view-public-list" class="max-w-7xl mx-auto px-6 py-16">
-      <div class="mb-12 border-b border-gray-100 pb-8"><h1 class="text-4xl font-black text-gray-900 tracking-tight uppercase tracking-widest">Find Your Future</h1></div>
-      <div id="job-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-      <div id="no-jobs-state" class="hidden-view py-20 text-center border-2 border-dashed border-gray-100"><p class="text-gray-400 font-medium italic">No active positions found.</p></div>
-    </section>
-
-    <!-- VIEW: PUBLIC DETAIL -->
-    <section id="view-public-detail" class="hidden-view max-w-5xl mx-auto px-6 py-16">
-      <button onclick="switchView('public-list')" class="mb-8 flex items-center text-[10px] font-bold text-gray-400 hover:text-brand tracking-widest uppercase transition"><i data-lucide="arrow-left" class="w-4 h-4 mr-2"></i> All Openings</button>
-      <div id="job-detail-container"></div>
-    </section>
-
-    <!-- VIEW: ADMIN CANDIDATES -->
-    <section id="view-admin-candidates" class="hidden-view w-full px-6 py-12">
-      <div class="odoo-card overflow-hidden">
-        <div class="p-4 bg-gray-50 border-b flex justify-between items-center"><h2 class="text-xs font-bold uppercase tracking-widest text-gray-500">Applicant Database</h2><button onclick="fetchCandidates()" class="text-brand text-[10px] font-bold flex items-center gap-2 uppercase tracking-widest border border-brand/20 px-4 py-2 hover:bg-brand/5 transition"><i data-lucide="refresh-cw" class="w-3 h-3"></i> Sync Live Data</button></div>
-        <div class="overflow-x-auto"><table class="w-full text-left"><thead><tr><th>App ID</th><th>Candidate</th><th>Applied For</th><th>Experience</th><th>CTC Details</th><th>Notice & Location</th><th>Documents</th><th>Applied On</th></tr></thead><tbody id="candidates-table"></tbody></table></div>
-      </div>
-    </section>
-  </main>
-
-  <!-- MODAL: APPLY -->
-  <div id="modal-apply" class="fixed inset-0 z-[100] hidden-view bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white w-full max-w-2xl p-12 odoo-card shadow-2xl overflow-y-auto max-h-[90vh]">
-      <div class="flex justify-between items-center mb-10 border-b pb-4"><h3 class="text-xl font-bold uppercase tracking-widest">Job Application</h3><button onclick="closeApplyModal()" class="text-gray-400 hover:text-gray-600"><i data-lucide="x"></i></button></div>
-      <form id="form-apply" class="space-y-6">
-        <input type="hidden" id="app-job-id"><input type="hidden" id="app-job-title">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input name="name" placeholder="Full Name *" required class="border p-3 text-sm focus:border-brand outline-none"><input name="email" type="email" placeholder="Email Address *" required class="border p-3 text-sm focus:border-brand outline-none">
-          <input name="phone" placeholder="Phone Number *" required class="border p-3 text-sm focus:border-brand outline-none"><input name="location" placeholder="Current City *" required class="border p-3 text-sm focus:border-brand outline-none">
-          <input name="education" placeholder="Highest Education *" class="border p-3 text-sm focus:border-brand outline-none md:col-span-2">
-          <input name="totalExp" placeholder="Total Experience (Yrs) *" required class="border p-3 text-sm focus:border-brand outline-none"><input name="relExp" placeholder="Relevant Experience (Yrs) *" required class="border p-3 text-sm focus:border-brand outline-none">
-          <input name="ctc" placeholder="Current CTC *" required class="border p-3 text-sm focus:border-brand outline-none"><input name="expCtc" placeholder="Expected CTC *" required class="border p-3 text-sm focus:border-brand outline-none">
-          <input name="notice" placeholder="Notice Period *" required class="border p-3 text-sm md:col-span-2 focus:border-brand outline-none">
-        </div>
-        <div class="border-2 border-dashed border-gray-200 p-8 text-center bg-gray-50"><label class="cursor-pointer block"><span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block">Upload Resume (PDF ONLY)</span><input type="file" id="resume-file" accept=".pdf" required class="text-[10px] mx-auto block"></label></div>
-        <button type="submit" id="submit-btn" class="w-full btn-brand py-4 text-xs">Submit Application</button>
-      </form>
-    </div>
-  </div>
-
-  <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzW1v7m7ZkvmPNxJCn2SuYKxC98rhw1DSngtczmrt66XTjt2iEau2sfin2ekcbt-DTEWQ/exec";
-    const LOGO_URL = "https://media.licdn.com/dms/image/v2/D560BAQEPjP3aKt0lyg/company-logo_200_200/B56ZU2_QxhHEAM-/0/1740384308771/hiregrow_consultants_logo?e=1771459200&v=beta&t=lB1EaAdg4Jwoj7MnO_Gsy9HmVrascy0YTLkTN2ndvUg";
-    
-    let ALL_JOBS = [];
-    const urlParams = new URLSearchParams(window.location.search);
-    const isAdmin = urlParams.get('page') === 'admin';
-
-    /**
-     * Enhanced Formatter: Detects bullet points and manual line breaks
-     */
-    function formatTextToHtml(text) {
-      if (!text) return '';
-      const splitRegex = /\r?\n|•|-|–|\*|\s{2,}/;
-      const lines = text.split(splitRegex).map(line => line.trim()).filter(line => line.length > 0);
-      if (lines.length > 1) {
-        return `<ul class="list-disc ml-5 space-y-2">${lines.map(line => `<li>${line}</li>`).join('')}</ul>`;
-      }
-      return `<p>${text}</p>`;
-    }
-
-    /**
-     * DD-MM-YYYY Date Formatter
-     */
-    function formatDate(dateStr) {
-      if (!dateStr) return 'Recent';
-      try {
-        const d = new Date(dateStr);
-        if (isNaN(d.getTime())) return dateStr;
-        return d.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
-      } catch (e) { return dateStr; }
-    }
-
-    /**
-     * SEO Injection with explicit logo and org details
-     */
-    function injectJobSchema(job) {
-      const existing = document.getElementById('dynamic-job-schema');
-      if (existing) existing.remove();
-
-      const minVal = parseFloat(String(job.minSal).replace(/[^0-9.]/g, '')) || 0;
-      const maxVal = parseFloat(String(job.maxSal).replace(/[^0-9.]/g, '')) || 0;
-
-      const schema = {
-        "@context": "https://schema.org/",
-        "@type": "JobPosting",
-        "title": job.title,
-        "description": job.description + (job.requirements ? " Requirements: " + job.requirements : ""),
-        "identifier": { "@type": "PropertyValue", "name": job.company || "Hiregrow Consultants", "value": job.id },
-        "datePosted": job.postedDate || new Date().toISOString().split('T')[0],
-        "employmentType": (job.type || "FULL_TIME").toUpperCase().replace(/\s/g, '_'),
-        "hiringOrganization": {
-          "@type": "Organization",
-          "name": job.company || "Hiregrow Consultants",
-          "sameAs": "https://www.raveone.in/",
-          "logo": LOGO_URL
-        },
-        "jobLocation": { "@type": "Place", "address": { "@type": "PostalAddress", "addressLocality": job.location || "India", "addressCountry": "IN" } }
-      };
-
-      if (minVal > 0) {
-        schema.baseSalary = {
-          "@type": "MonetaryAmount",
-          "currency": "INR",
-          "value": { "@type": "QuantitativeValue", "minValue": minVal, "maxValue": maxVal || minVal, "unitText": "MONTH" }
-        };
-      }
-
-      const script = document.createElement('script');
-      script.id = 'dynamic-job-schema';
-      script.type = 'application/ld+json';
-      script.text = JSON.stringify(schema);
-      document.head.appendChild(script);
-
-      // Also update page metadata
-      document.title = `${job.title} | Raveone Consultants`;
-      
-      // Update Canonical Link for Google Crawler discovery
-      let canonical = document.querySelector('link[rel="canonical"]');
-      if (!canonical) {
-        canonical = document.createElement('link');
-        canonical.rel = 'canonical';
-        document.head.appendChild(canonical);
-      }
-      canonical.href = window.location.href;
-    }
-
-    function handleConnectionError(err) {
-      document.getElementById('loader-icon').classList.add('hidden-view');
-      document.getElementById('loader-content').classList.add('hidden-view');
-      document.getElementById('connection-error').classList.remove('hidden-view');
-      lucide.createIcons();
-    }
-
-    window.onload = function() {
-      lucide.createIcons();
-      if (isAdmin) { document.getElementById('admin-menu').classList.remove('hidden-view'); switchView('admin-candidates'); }
-      else { switchView('public-list'); }
-      fetchJobs();
-    };
-
-    async function fetchJobs() {
-      try {
-        const response = await fetch(`${SCRIPT_URL}?action=getJobs`);
-        const data = await response.json();
-        document.getElementById('loader').classList.add('hidden-view');
-        if (data && !data.error) { ALL_JOBS = Array.isArray(data) ? data : []; renderPublicList(); const jobId = urlParams.get('jobId'); if (jobId) renderJobDetail(jobId); }
-      } catch (e) { handleConnectionError(e); }
-    }
-
-    function renderPublicList() {
-      const active = ALL_JOBS.filter(j => String(j.status).toLowerCase() === 'active');
-      const container = document.getElementById('job-grid');
-      if (active.length === 0) { document.getElementById('no-jobs-state').classList.remove('hidden-view'); container.innerHTML = ''; return; }
-      container.innerHTML = active.map(job => `
-        <div class="odoo-card p-8 flex flex-col h-full cursor-pointer group" onclick="renderJobDetail('${job.id}')">
-          <div class="flex justify-between items-start mb-6">
-            <h3 class="text-xl font-bold text-gray-900 group-hover:text-brand transition tracking-tight">${job.title}</h3>
-            <span class="text-[9px] font-black border px-2 py-1 uppercase tracking-widest">${job.type || 'Full Time'}</span>
-          </div>
-          <p class="text-xs text-gray-500 mb-8 font-medium flex items-center gap-1.5"><i data-lucide="map-pin" class="w-3.5 h-3.5"></i> ${job.location || 'India'}</p>
-          <div class="mt-auto flex justify-between items-center text-[9px] font-bold text-gray-400 tracking-widest uppercase border-t pt-4">
-            <span>EXP: ${job.minExp || 0}+ YRS</span>
-            <span class="text-brand font-black flex items-center group-hover:underline">VIEW ROLE <i data-lucide="chevron-right" class="w-3 h-3 ml-0.5"></i></span>
-          </div>
-        </div>
-      `).join('');
-      lucide.createIcons();
-    }
-
-    function renderJobDetail(id) {
-      const job = ALL_JOBS.find(j => String(j.id) === String(id));
-      if (!job) return;
-
-      injectJobSchema(job);
-
-      const currentUrl = new URL(window.location);
-      currentUrl.searchParams.set('jobId', id);
-      window.history.pushState({}, '', currentUrl);
-
-      const skills = job.skills ? job.skills.split(',').map(s => `<span class="skill-pill">${s.trim()}</span>`).join('') : '';
-
-      document.getElementById('job-detail-container').innerHTML = `
-        <div class="mb-12 border-b border-gray-100 pb-12">
-          <div class="flex flex-col md:flex-row justify-between items-start gap-8">
-            <div class="space-y-2">
-              <span class="text-[10px] font-black text-brand uppercase tracking-[0.2em]">${job.company || 'Hiregrow Consultants'}</span>
-              <h1 class="text-4xl font-black text-gray-900 tracking-tight leading-tight">${job.title}</h1>
-              <div class="flex flex-wrap gap-6 text-sm text-gray-500 font-medium pt-4">
-                <span class="flex items-center gap-1.5"><i data-lucide="map-pin" class="w-4 h-4 text-brand"></i> ${job.location}</span>
-                <span class="flex items-center gap-1.5"><i data-lucide="clock" class="w-4 h-4 text-brand"></i> ${job.type}</span>
-                <span class="flex items-center gap-1.5"><i data-lucide="calendar" class="w-4 h-4 text-brand"></i> Posted: ${formatDate(job.postedDate)}</span>
-              </div>
+    <header class="odoo-header h-10 flex items-center px-4 shrink-0 shadow-sm z-50">
+        <div class="flex items-center gap-4 h-full">
+            <div class="flex items-center gap-2">
+                <img src="https://media.licdn.com/dms/image/v2/D560BAQEPjP3aKt0lyg/company-logo_100_100/B56ZU2_QxhHEAU-/0/1740384308771/hiregrow_consultants_logo?e=1771459200&v=beta&t=-T9reydL3xneDymdksgLtMqMz-suxGRgfWCI5gW1v6c" class="logo-img" alt="Hiregrow">
+                <span class="font-bold text-xs uppercase tracking-tight">Hiregrow CRM</span>
             </div>
-            <button onclick="openApplyModal('${job.id}', '${job.title.replace(/'/g, "\\'")}')" class="btn-brand px-12 py-5 text-xs shadow-xl shadow-brand/10 w-full md:w-auto">Apply Now</button>
-          </div>
+            <nav class="flex gap-3 h-full text-[10px] font-bold uppercase tracking-wider">
+                <button onclick="switchView('Job Board')" id="tab-jobs" class="h-full px-1 opacity-70 hover:opacity-100 transition-all">Job Board</button>
+                <button onclick="switchView('Sourced')" id="tab-sourced" class="h-full px-1 opacity-70 hover:opacity-100 transition-all">Sourced</button>
+                <button onclick="switchView('Candidates')" id="tab-candidates" class="h-full px-1 opacity-70 hover:opacity-100 transition-all">Candidates</button>
+                <button onclick="switchView('Interview Tracker')" id="tab-interviews" class="h-full px-1 opacity-70 hover:opacity-100 transition-all">Interviews</button>
+                <button onclick="switchView('Clients')" id="tab-clients" class="h-full px-1 opacity-70 hover:opacity-100 transition-all">Clients</button>
+                <button onclick="switchView('Dashboard and Billing')" id="tab-billing" class="h-full px-1 opacity-70 hover:opacity-100 transition-all">Billing</button>
+            </nav>
         </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 bg-gray-50 p-8 mb-12 border border-gray-100">
-          <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Job ID</p><p class="text-sm font-bold">${job.id}</p></div>
-          <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Company</p><p class="text-sm font-bold">${job.company}</p></div>
-          <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Posted Date</p><p class="text-sm font-bold">${formatDate(job.postedDate)}</p></div>
-          <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Category</p><p class="text-sm font-bold">${job.category || '-'}</p></div>
-          <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Employment Type</p><p class="text-sm font-bold">${job.type || '-'}</p></div>
-          <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Industry</p><p class="text-sm font-bold">${job.industry || '-'}</p></div>
-          <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Experience (Min/Max)</p><p class="text-sm font-bold">${job.minExp || '0'} - ${job.maxExp || '+'} Yrs</p></div>
-          <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Salary (Min/Max)</p><p class="text-sm font-bold text-emerald-600">${job.minSal || '-'} - ${job.maxSal || '-'}</p></div>
-          <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Education</p><p class="text-sm font-bold">${job.education || '-'}</p></div>
-          <div class="md:col-span-2"><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Core Skills</p><div class="flex flex-wrap gap-2">${skills}</div></div>
-          <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Positions</p><p class="text-sm font-bold">${job.positions || '1'}</p></div>
+        <div class="ml-auto flex items-center gap-3">
+            <button onclick="syncWebsiteForm()" class="text-[9px] font-bold bg-emerald-600 text-white px-2 py-1 rounded uppercase flex items-center gap-1 hover:bg-emerald-700">
+                <i class="ph ph-arrows-clockwise"></i> Sync
+            </button>
+            <button onclick="testConnection()" class="text-[9px] font-bold bg-white/10 px-2 py-1 rounded hover:bg-white/20">Test</button>
         </div>
+    </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-16">
-          <div class="lg:col-span-2 space-y-12">
-            <section><h3 class="text-[11px] font-black text-gray-900 uppercase tracking-widest mb-6 border-l-4 border-brand pl-3">Job Responsibilities</h3><div class="text-gray-600 formatted-text">${formatTextToHtml(job.description)}</div></section>
-            <section><h3 class="text-[11px] font-black text-gray-900 uppercase tracking-widest mb-6 border-l-4 border-brand pl-3">Requirements</h3><div class="text-gray-600 formatted-text">${formatTextToHtml(job.requirements)}</div></section>
-          </div>
+    <div class="bg-white py-1 px-4 flex items-center justify-between border-b shrink-0 h-10">
+        <div class="flex flex-col">
+            <div id="breadcrumb" class="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1">
+                <span class="breadcrumb-item" onclick="resetDrillDown()">CRM</span> / <span id="currentTabName">Job Board</span>
+            </div>
+            <div class="flex items-center gap-2 mt-0.5">
+                <button onclick="refreshData()" class="btn-primary text-[10px] py-0.5 px-2">Refresh Sync</button>
+                <button id="backBtn" onclick="resetDrillDown()" class="btn-primary bg-slate-100 !text-slate-700 hover:bg-slate-200 text-[10px] py-0.5 px-2 hidden">Back to Main</button>
+            </div>
         </div>
-      `;
-      switchView('public-detail');
-      lucide.createIcons();
-    }
+        <div class="flex-1 max-w-xs bg-slate-100 border rounded px-2 flex items-center focus-within:bg-white focus-within:ring-1 focus-within:ring-teal-500 transition-all ml-4">
+            <i class="ph ph-magnifying-glass text-slate-400 mr-1 text-sm"></i>
+            <input type="text" id="searchInput" onkeyup="handleSearch()" placeholder="Filter..." class="w-full bg-transparent py-0.5 text-xs outline-none">
+        </div>
+    </div>
 
-    async function fetchCandidates() {
-      const table = document.getElementById('candidates-table');
-      table.innerHTML = '<tr><td colspan="8" class="text-center py-12 text-gray-400 text-[10px] font-bold uppercase animate-pulse">Syncing Database...</td></tr>';
-      try {
-        const response = await fetch(`${SCRIPT_URL}?action=getApplications`);
-        const data = await response.json();
-        if (!data || data.length === 0) { table.innerHTML = '<tr><td colspan="8" class="text-center py-12 text-gray-300">No applicants found.</td></tr>'; return; }
-        table.innerHTML = data.map(c => `
-          <tr class="hover:bg-gray-50"><td class="font-mono text-[10px] text-gray-400 border-r border-gray-100">${c.appId}</td>
-            <td class="border-r border-gray-100"><div class="font-bold text-gray-900">${c.name}</div><div class="text-[10px] text-gray-400 font-normal">${c.email}</div><div class="text-[10px] text-brand font-medium">${c.phone}</div></td>
-            <td class="border-r border-gray-100"><div class="font-semibold text-gray-700">${c.jobTitle}</div><div class="text-[9px] text-gray-400 uppercase">${c.jobId}</div></td>
-            <td class="border-r border-gray-100"><div class="text-gray-600">Total: ${c.totalExp} Yrs</div><div class="text-[10px] text-gray-400">Rel: ${c.relExp} Yrs</div></td>
-            <td class="border-r border-gray-100"><div class="text-emerald-700 font-bold">Exp: ${c.expCtc}</div><div class="text-[10px] text-gray-400">Curr: ${c.ctc}</div></td>
-            <td class="border-r border-gray-100"><div class="text-gray-600">${c.notice}</div><div class="text-[10px] text-gray-400">${c.location}</div></td>
-            <td class="border-r border-gray-100"><a href="${c.resume}" target="_blank" class="bg-brand/10 text-brand px-3 py-1 rounded-sm font-black text-[9px] hover:bg-brand hover:text-white transition uppercase inline-block">View CV</a></td>
-            <td class="text-gray-400 font-bold text-[10px]">${formatDate(c.date)}</td></tr>`).join('');
-        lucide.createIcons();
-      } catch (e) { table.innerHTML = `<tr><td colspan="8" class="text-center py-12 text-red-500 font-bold">Sync Error</td></tr>`; }
-    }
+    <div class="flex-1 overflow-auto bg-white scrollbar-hide">
+        <table class="odoo-table w-full text-left table-fixed min-w-[3500px]">
+            <thead id="tableHead"></thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+        <div id="noData" class="flex flex-col items-center justify-center py-40 text-slate-300 hidden">
+            <i class="ph ph-folder-open text-6xl opacity-20 mb-4"></i>
+            <p class="font-bold uppercase tracking-widest text-xs">No records found</p>
+        </div>
+    </div>
 
-    function openApplyModal(id, title) { document.getElementById('app-job-id').value = id; document.getElementById('app-job-title').value = title; document.getElementById('modal-apply').classList.remove('hidden-view'); }
-    function closeApplyModal() { document.getElementById('modal-apply').classList.add('hidden-view'); document.getElementById('form-apply').reset(); }
-    function switchView(id) { document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden-view')); document.getElementById('view-' + id).classList.remove('hidden-view'); if (id === 'admin-candidates') fetchCandidates(); window.scrollTo(0, 0); }
-    
-    document.getElementById('form-apply').onsubmit = function(e) { 
-      e.preventDefault(); 
-      const btn = document.getElementById('submit-btn'); 
-      btn.innerText = "UPLOADING..."; btn.disabled = true; 
-      const file = document.getElementById('resume-file').files[0]; 
-      const reader = new FileReader();
-      reader.onload = async function(f) { 
-        const payload = { resumeBase64: f.target.result }; 
-        new FormData(e.target).forEach((v, k) => payload[k] = v); 
-        payload.jobId = document.getElementById('app-job-id').value; 
-        payload.jobTitle = document.getElementById('app-job-title').value;
-        try { 
-          const response = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) }); 
-          const res = await response.json(); 
-          if (res.success) { alert("Success! Application Submitted."); closeApplyModal(); } 
-        } catch (err) { alert("Failed to submit."); } 
-        finally { btn.innerText = "Submit Application"; btn.disabled = false; } 
-      };
-      if (file) reader.readAsDataURL(file); 
-    };
-  </script>
+    <!-- Modals -->
+    <div id="interviewModal" class="modal-overlay">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-sm overflow-hidden flex flex-col transform transition-all">
+            <div class="p-3 border-b bg-indigo-50 flex items-center justify-between">
+                <h3 class="font-bold text-indigo-800 text-xs uppercase">Schedule Interview</h3>
+                <button onclick="closeModal('interviewModal')" class="p-1 hover:bg-white rounded-full transition-all text-slate-400"><i class="ph ph-x text-lg"></i></button>
+            </div>
+            <div class="p-4 space-y-3 text-left">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Date</label>
+                        <input type="date" id="intDate" class="w-full p-1.5 bg-slate-50 border border-slate-200 rounded text-xs outline-none">
+                    </div>
+                    <div>
+                        <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Time</label>
+                        <input type="time" id="intTime" class="w-full p-1.5 bg-slate-50 border border-slate-200 rounded text-xs outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Format</label>
+                    <select id="intFormat" onchange="updateIntLocLabel()" class="w-full p-1.5 bg-slate-50 border border-slate-200 rounded text-xs font-bold outline-none">
+                        <option value="Google Meet">Google Meet</option>
+                        <option value="Telephonic">Telephonic Interview</option>
+                        <option value="F2F">Face to Face (F2F)</option>
+                    </select>
+                </div>
+                <div>
+                    <label id="intLocLabel" class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Meeting Link / Address</label>
+                    <input type="text" id="intLocation" value="https://meet.google.com/vcj-dfaf-pcc" class="w-full p-1.5 bg-slate-50 border border-slate-200 rounded text-xs outline-none">
+                </div>
+            </div>
+            <div class="p-3 bg-slate-50 border-t flex justify-end gap-2">
+                <button onclick="closeModal('interviewModal')" class="text-[10px] font-bold text-slate-500 px-3">Cancel</button>
+                <button onclick="generateIntInvite()" class="bg-indigo-600 text-white px-4 py-1.5 rounded text-[10px] font-bold uppercase tracking-widest shadow-md">Create Invitation</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="messageModal" class="modal-overlay">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-lg overflow-hidden flex flex-col transform transition-all">
+            <div class="p-3 border-b bg-slate-50 flex items-center justify-between">
+                <div>
+                    <h3 id="modalTitle" class="font-bold text-slate-800 text-xs uppercase">Preview</h3>
+                    <p id="modalSubtitle" class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Enriched Template</p>
+                </div>
+                <button onclick="closeModal('messageModal')" class="p-1 hover:bg-slate-200 rounded-full text-slate-400 transition-all"><i class="ph ph-x text-lg"></i></button>
+            </div>
+            <div class="p-4 space-y-3 text-left">
+                <div id="emailSubjectContainer">
+                    <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Subject</label>
+                    <div id="emailSubject" class="p-2 bg-slate-50 border border-slate-200 rounded text-xs font-bold text-slate-700"></div>
+                </div>
+                <div>
+                    <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Message Body</label>
+                    <textarea id="messageBody" class="w-full h-80 p-3 bg-slate-50 border border-slate-200 rounded text-xs leading-relaxed text-slate-600 focus:ring-1 focus:ring-teal-500 outline-none"></textarea>
+                </div>
+            </div>
+            <div class="p-3 bg-slate-50 border-t flex items-center justify-between">
+                <button onclick="copyMessage()" class="text-[9px] font-black text-slate-500 hover:text-teal-600 uppercase tracking-widest flex items-center gap-1 transition-colors">
+                    <i class="ph ph-copy text-sm"></i> Copy
+                </button>
+                <div class="flex gap-2">
+                    <button id="waActionBtn" class="bg-emerald-600 text-white px-4 py-1.5 rounded text-[10px] font-bold uppercase tracking-widest flex items-center gap-1 hover:bg-emerald-700 shadow-sm">
+                        <i class="ph ph-whatsapp-logo text-lg"></i> WhatsApp
+                    </button>
+                    <button id="emailActionBtn" class="bg-indigo-600 text-white px-4 py-1.5 rounded text-[10px] font-bold uppercase tracking-widest flex items-center gap-1 hover:bg-indigo-700 shadow-sm">
+                        <i class="ph ph-envelope text-lg"></i> Email
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Drawer -->
+    <div id="aiDrawer" class="fixed inset-y-0 right-0 w-80 bg-white shadow-2xl z-[1500] transform translate-x-full transition-transform duration-300 border-l flex flex-col">
+        <div class="p-4 border-b bg-slate-50 flex items-center justify-between">
+            <h3 class="font-bold text-teal-700 text-[10px] flex items-center gap-2 uppercase tracking-widest"><i class="ph ph-sparkle-fill"></i> Gemini Analysis</h3>
+            <button onclick="closeAi()"><i class="ph ph-x text-lg text-slate-400"></i></button>
+        </div>
+        <div id="aiContent" class="p-4 flex-1 overflow-auto text-xs text-left leading-relaxed text-slate-600 italic">Select record...</div>
+    </div>
+
+    <div id="loader">
+        <div class="spinner mb-2"></div>
+        <p class="text-[10px] font-black text-teal-600 uppercase tracking-[0.2em] animate-pulse">Synchronizing Data</p>
+    </div>
+
+    <script>
+        // REPLACE THIS with your Apps Script Web App URL
+        const API_URL = "https://script.google.com/macros/s/AKfycbyPcskubRZyingteGUZZdUELLCVAHLUfvz9WFbukEO4VdrVHhC-D7qjG0Q-i29Miyc/exec"; 
+        
+        let currentView = 'Job Board';
+        let fullData = { jobs: [], candidates: [], sourced: [], interviews: [], clients: [], billing: [] };
+        let filteredData = [];
+        let activeIdx = null;
+
+        async function init() {
+            if (API_URL.includes("PASTE_YOUR")) return;
+            refreshData();
+        }
+
+        async function refreshData() {
+            showLoader(true);
+            try {
+                const resp = await fetch(`${API_URL}?action=getAllData`);
+                fullData = await resp.json();
+                switchView(currentView);
+            } catch (err) { console.error("Sync error:", err); }
+            showLoader(false);
+        }
+
+        async function syncWebsiteForm() {
+            showLoader(true);
+            try {
+                const resp = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'syncForm' }) });
+                const res = await resp.json();
+                alert(res.message);
+                refreshData();
+            } catch (err) { alert("Sync Error."); }
+            showLoader(false);
+        }
+
+        function switchView(view) {
+            currentView = view;
+            document.getElementById('currentTabName').innerText = view;
+            document.querySelectorAll('nav button').forEach(b => b.classList.remove('active-tab'));
+            const map = { 'Job Board': 'tab-jobs', 'Sourced': 'tab-sourced', 'Candidates': 'tab-candidates', 'Interview Tracker': 'tab-interviews', 'Clients': 'tab-clients', 'Dashboard and Billing': 'tab-billing' };
+            if(map[view]) document.getElementById(map[view]).classList.add('active-tab');
+            document.getElementById('backBtn').classList.add('hidden');
+
+            const sourceMap = { 'Job Board': fullData.jobs, 'Sourced': fullData.sourced, 'Candidates': fullData.candidates, 'Interview Tracker': fullData.interviews, 'Clients': fullData.clients, 'Dashboard and Billing': fullData.billing };
+            filteredData = Array.isArray(sourceMap[view]) ? sourceMap[view] : [];
+            renderTable();
+        }
+
+        function renderTable() {
+            const head = document.getElementById('tableHead');
+            const body = document.getElementById('tableBody');
+            const empty = document.getElementById('noData');
+            head.innerHTML = ""; body.innerHTML = "";
+
+            if (!filteredData.length) { empty.classList.remove('hidden'); return; }
+            empty.classList.add('hidden');
+
+            // Header sequence and full-field injection
+            let cols = [];
+            if (currentView === 'Candidates') {
+                cols = ['JOB_ID', 'APP_ID', 'CLIENT_ID', 'JOB_TITLE', 'JOB_LOCATION', 'CURRENT_STATUS', 'CANDIDATE_NAME', 'PHONE', 'EMAIL', 'EDUCATION', 'TOTAL_EXPERIENCE', 'RELEVANT_EXPERIENCE', 'CURRENT_CTC', 'EXPECTED_CTC', 'NOTICE_PERIOD', 'INTERVIEW_TELEPHONIC', 'INTERVIEW_F2F', 'CURRENT_LOCATION', 'RESUME_LINK', 'SUBMITTED_DATE'];
+            } else if (currentView === 'Clients') {
+                cols = ['CLIENT_ID','CONTACT_NAME','EMAIL','PHONE','COMPANY_NAME','WEBSITE','ASSIGNED_JOBS_COUNT','ADDRESS','CLIENT_STATUS'];
+            } else if (currentView === 'Dashboard and Billing') {
+                cols = ['CLIENT_NAME','CANDIDATE_NAME','JOINING_DATE','PERCENTAGE_COMMISSION','CTC_CANDIDATE','BILLING_AMOUNT','PAYMENT_STATUS','BALANCE_DUE'];
+            } else {
+                cols = Object.keys(filteredData[0]).filter(k => !k.startsWith('_'));
+            }
+            
+            let hRow = "<tr><th class='w-12 px-2'><input type='checkbox'></th>";
+            cols.forEach(c => hRow += `<th>${c.replace(/_/g, ' ')}</th>`);
+            hRow += "<th class='text-right px-4 sticky right-0 bg-slate-50 shadow-[-2px_0_4px_rgba(0,0,0,0.05)]'>Actions</th></tr>";
+            head.innerHTML = hRow;
+
+            filteredData.forEach((row, i) => {
+                let clickFn = '';
+                if (currentView === 'Clients') clickFn = `drillDownJobs('${row.CLIENT_ID}')`;
+                else if (currentView === 'Job Board') clickFn = `drillDownCandidates('${row.JOB_ID}')`;
+
+                let bRow = `<tr class="border-b transition-colors hover:bg-slate-50" onclick="${clickFn}">`;
+                bRow += `<td class='px-2' onclick="event.stopPropagation()"><input type='checkbox'></td>`;
+                cols.forEach(c => bRow += `<td>${formatVal(c, row[c])}</td>`);
+                bRow += `<td class="text-right px-4 shrink-0 sticky right-0 bg-white shadow-[-4px_0_8px_rgba(0,0,0,0.02)]">
+                            <div class="flex items-center justify-end gap-1" onclick="event.stopPropagation()">${getActions(row, i)}</div>
+                         </td></tr>`;
+                body.innerHTML += bRow;
+            });
+        }
+
+        function drillDownJobs(clientId) {
+            filteredData = fullData.jobs.filter(j => j.CLIENT_ID === clientId);
+            document.getElementById('currentTabName').innerText = `Clients / ${clientId} / Jobs`;
+            document.getElementById('backBtn').classList.remove('hidden');
+            renderTable();
+        }
+
+        function drillDownCandidates(jobId) {
+            filteredData = fullData.candidates.filter(c => c.JOB_ID === jobId);
+            document.getElementById('currentTabName').innerText = `Job / ${jobId} / Candidates`;
+            document.getElementById('backBtn').classList.remove('hidden');
+            renderTable();
+        }
+
+        function resetDrillDown() { switchView(currentView); }
+
+        function getActions(row, i) {
+            let html = `<button onclick="runAi(${i}, event)" class="action-btn text-teal-600" title="Gemini Ranker"><i class="ph ph-sparkle-fill text-base"></i></button>`;
+            if (currentView === 'Candidates' || currentView === 'Sourced' || currentView === 'Job Board') {
+                html += `<button onclick="compose('CANDIDATE_JD_SHARE_WA', ${i})" class="action-btn text-emerald-600" title="WhatsApp JD"><i class="ph ph-whatsapp-logo text-base"></i></button>`;
+                html += `<button onclick="compose('CLIENT_CANDIDATE_SUBMISSION_WA', ${i})" class="action-btn text-blue-600" title="Submit Snapshot"><i class="ph ph-user-circle-plus text-base"></i></button>`;
+                html += `<button onclick="openIntModal(${i})" class="action-btn text-indigo-500" title="Interview Invite"><i class="ph ph-calendar-plus text-base"></i></button>`;
+            }
+            return html;
+        }
+
+        function openIntModal(idx) {
+            activeIdx = idx;
+            document.getElementById('intDate').valueAsDate = new Date();
+            document.getElementById('intTime').value = "11:00";
+            updateIntLocLabel();
+            openModal('interviewModal');
+        }
+
+        function updateIntLocLabel() {
+            const fmt = document.getElementById('intFormat').value;
+            const lbl = document.getElementById('intLocLabel');
+            const inp = document.getElementById('intLocation');
+            if (fmt === 'Google Meet') { lbl.innerText = "Meeting Link"; inp.value = "https://meet.google.com/vcj-dfaf-pcc"; }
+            else if (fmt === 'Telephonic') { lbl.innerText = "Phone Number"; inp.value = filteredData[activeIdx]?.PHONE || filteredData[activeIdx]?.SOURCED_PHONE || ""; }
+            else { lbl.innerText = "Office Address"; inp.value = "Hiregrow Office, Kalyan Nagar, Bangalore"; }
+        }
+
+        function generateIntInvite() {
+            const overrides = {
+                INTERVIEW_DATE: new Date(document.getElementById('intDate').value).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }),
+                INTERVIEW_TIME: document.getElementById('intTime').value,
+                INTERVIEW_MODE: document.getElementById('intFormat').value,
+                INTERVIEW_LOCATION_OR_LINK: document.getElementById('intLocation').value
+            };
+            closeModal('interviewModal');
+            compose('INTERVIEW_INVITATION_WA', activeIdx, overrides);
+        }
+
+        async function compose(key, idx, overrides = {}) {
+            showLoader(true);
+            const row = filteredData[idx];
+            try {
+                const resp = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'getProcessedMessage', templateKey: key, rowData: row, overrides: overrides })
+                });
+                const res = await resp.json();
+                document.getElementById('modalTitle').innerText = key.replace(/_/g, ' ');
+                document.getElementById('modalSubtitle').innerText = row.CANDIDATE_NAME || row.Candidate_Name || "Record";
+                document.getElementById('emailSubjectContainer').style.display = key.includes('WA') ? 'none' : 'block';
+                document.getElementById('emailSubject').innerText = res.subject;
+                document.getElementById('messageBody').value = res.message;
+                
+                const rawPhone = (res.phone || "").toString().replace(/\D/g, '');
+                const waPhone = rawPhone.length === 10 ? '91' + rawPhone : rawPhone;
+                document.getElementById('waActionBtn').onclick = () => window.open(`https://wa.me/${waPhone}?text=${encodeURIComponent(res.message)}`, '_blank');
+                document.getElementById('emailActionBtn').onclick = () => {
+                    const email = row.EMAIL || row.Email || "";
+                    window.open(`mailto:${email}?subject=${encodeURIComponent(res.subject)}&body=${encodeURIComponent(res.message)}`, '_blank');
+                };
+                openModal('messageModal');
+            } catch (err) { alert("Message error."); }
+            showLoader(false);
+        }
+
+        function formatVal(k, v) {
+            if (!v && v !== 0) return "--";
+            const s = String(v).toLowerCase();
+            if (k.includes('STATUS') || k.includes('PRIORITY')) {
+                let cls = "bg-slate-100 text-slate-500 border-slate-200";
+                if (['open', 'active', 'hired', 'hot', 'submitted', 'shortlisted'].includes(s)) cls = "bg-teal-50 text-teal-700 border-teal-100";
+                if (['rejected', 'cold', 'dropped'].includes(s)) cls = "bg-rose-50 text-rose-700 border-rose-100";
+                return `<span class="px-1.5 py-0.5 rounded text-[8px] font-bold uppercase border ${cls}">${v}</span>`;
+            }
+            if (k.includes('AMOUNT') || k.includes('CTC')) {
+                const num = Number(String(v).replace(/[^0-9.-]+/g,""));
+                return isNaN(num) ? v : `₹${num.toLocaleString()}`;
+            }
+            return v;
+        }
+
+        async function runAi(idx, e) {
+            e.stopPropagation();
+            const row = filteredData[idx];
+            let job = currentView === 'Job Board' ? row : (fullData.jobs.find(j => j.JOB_ID === row.JOB_ID) || fullData.jobs[0] || {});
+            document.getElementById('aiDrawer').classList.remove('translate-x-full');
+            document.getElementById('aiContent').innerHTML = `<div class="py-20 text-center"><div class="spinner mx-auto mb-2"></div><p class="text-[9px] font-bold text-slate-400">Gemini Ranking...</p></div>`;
+            try {
+                const resp = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'aiRank', candidateData: row, jobData: job }) });
+                const res = await resp.json();
+                document.getElementById('aiContent').innerHTML = `<div class="mb-4 text-[10px] font-black text-teal-600 uppercase tracking-widest text-left">Analysis: ${job.POSITION_TITLE || "Role"}</div><div class="text-slate-700 font-medium bg-white p-4 rounded border shadow-sm leading-relaxed text-left text-[11px]">${res.analysis}</div>`;
+            } catch (err) { document.getElementById('aiContent').innerHTML = `<div class="p-2 bg-rose-50 text-rose-700 rounded text-[10px]">Error.</div>`; }
+        }
+
+        function handleSearch() {
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            const sourceMap = { 'Job Board': fullData.jobs, 'Sourced': fullData.sourced, 'Candidates': fullData.candidates, 'Interview Tracker': fullData.interviews, 'Clients': fullData.clients, 'Dashboard and Billing': fullData.billing };
+            const base = sourceMap[currentView] || [];
+            filteredData = base.filter(r => Object.values(r).some(v => String(v).toLowerCase().includes(q)));
+            renderTable();
+        }
+
+        function copyMessage() { const body = document.getElementById('messageBody'); body.select(); document.execCommand('copy'); alert("Copied!"); }
+        function openModal(id) { document.getElementById(id).classList.add('open'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+        function closeAi() { document.getElementById('aiDrawer').classList.add('translate-x-full'); }
+        function showLoader(s) { document.getElementById('loader').style.display = s ? 'flex' : 'none'; }
+        
+        async function testConnection() {
+            showLoader(true);
+            try {
+                const resp = await fetch(`${API_URL}?action=getAllData`);
+                const res = await resp.json();
+                alert(res.error ? `Error: ${res.error}` : "✅ Connected! Found " + res.jobs.length + " jobs.");
+                if(!res.error) refreshData();
+            } catch (e) { alert("❌ Backend Unreachable."); }
+            showLoader(false);
+        }
+        window.onload = init;
+    </script>
 </body>
 </html>
