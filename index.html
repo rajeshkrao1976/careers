@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Careers | Raveone Consultants</title>
-  
+
   <!-- SEO & Brand Assets -->
   <link rel="icon" type="image/png" href="https://media.licdn.com/dms/image/v2/D560BAQEPjP3aKt0lyg/company-logo_200_200/B56ZU2_QxhHEAM-/0/1740384308771/hiregrow_consultants_logo?e=1771459200&v=beta&t=lB1EaAdg4Jwoj7MnO_Gsy9HmVrascy0YTLkTN2ndvUg">
-  
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
@@ -23,26 +23,16 @@
     .btn-brand:hover { background-color: #5D3A53; }
     .btn-brand:disabled { background-color: #9CA3AF; cursor: not-allowed; }
     .skill-pill { background: #F3F4F6; color: #4B5563; padding: 2px 8px; font-size: 10px; font-weight: 700; border: 1px solid #E5E7EB; text-transform: uppercase; }
-    
     .formatted-text { line-height: 1.8; font-size: 0.95rem; white-space: normal; }
     .formatted-text ul { list-style-type: disc; margin-left: 1.5rem; margin-top: 0.75rem; margin-bottom: 0.75rem; }
     .formatted-text li { margin-bottom: 0.6rem; padding-left: 0.25rem; }
     .formatted-text p { margin-bottom: 1rem; }
-
     th { font-size: 10px; font-weight: 800; text-transform: uppercase; background: #F9FAFB; padding: 12px; border-bottom: 2px solid #E5E7EB; white-space: nowrap; }
     td { font-size: 11px; padding: 12px; border-bottom: 1px solid #F3F4F6; }
-    
     @keyframes pulse-slow { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
     .animate-pulse-slow { animation: pulse-slow 3s infinite; }
-    
-    #notification-toast {
-        transition: transform 0.3s ease-out, opacity 0.3s ease-out;
-        transform: translateY(100px);
-    }
-    #notification-toast.show {
-        transform: translateY(0);
-        opacity: 1;
-    }
+    #notification-toast { transition: transform 0.3s ease-out, opacity 0.3s ease-out; transform: translateY(100px); }
+    #notification-toast.show { transform: translateY(0); opacity: 1; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -57,8 +47,8 @@
   <!-- NOTIFICATION TOAST -->
   <div id="notification-toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[1000] opacity-0 pointer-events-none">
     <div id="notification-content" class="bg-gray-900 text-white px-6 py-3 shadow-2xl flex items-center gap-3">
-        <i id="notification-icon" data-lucide="info" class="w-4 h-4 text-brand"></i>
-        <span id="notification-text" class="text-[11px] font-bold uppercase tracking-widest">Message here</span>
+      <i id="notification-icon" data-lucide="info" class="w-4 h-4 text-brand"></i>
+      <span id="notification-text" class="text-[11px] font-bold uppercase tracking-widest">Message here</span>
     </div>
   </div>
 
@@ -179,18 +169,19 @@
   </div>
 
   <script>
-    // REPLACE THIS URL WITH YOUR DEPLOYED WEB APP URL
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbytjddfuF-gXV9bmFrrv0fUIPv28eW4laU-07bqeERSh0Mu3bcBt9kPa9a6hdWQZL2vHw/exec";
-    
+    // ========== REPLACE THIS WITH YOUR DEPLOYED WEB APP URL ==========
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby0kLYLjk-9rjHEB4P0u5OZvpPDb3tKeoGqQou4daUSh-E7IlT9rLMHvw9WDEbAvw8v/exec";
+    // =================================================================
+
     let ALL_JOBS = [];
     let ADMIN_TOKEN = sessionStorage.getItem('raveone_token') || "";
 
     function showNotification(text, type = 'info') {
-        const toast = document.getElementById('notification-toast');
-        const textEl = document.getElementById('notification-text');
-        textEl.innerText = text;
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 4000);
+      const toast = document.getElementById('notification-toast');
+      const textEl = document.getElementById('notification-text');
+      textEl.innerText = text;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 4000);
     }
 
     function formatTextToHtml(text) {
@@ -219,12 +210,12 @@
     }
 
     function logoutAdmin() {
-        ADMIN_TOKEN = "";
-        sessionStorage.removeItem('raveone_token');
-        document.getElementById('admin-menu').classList.add('hidden-view');
-        document.getElementById('nav-login-btn').classList.remove('hidden-view');
-        switchView('public-list');
-        showNotification("Logged out successfully");
+      ADMIN_TOKEN = "";
+      sessionStorage.removeItem('raveone_token');
+      document.getElementById('admin-menu').classList.add('hidden-view');
+      document.getElementById('nav-login-btn').classList.remove('hidden-view');
+      switchView('public-list');
+      showNotification("Logged out successfully");
     }
 
     async function fetchJobs() {
@@ -232,22 +223,24 @@
         const res = await fetch(`${SCRIPT_URL}?action=getJobs`);
         const data = await res.json();
         document.getElementById('loader').classList.add('hidden-view');
-        if (data && !data.error) { 
-          ALL_JOBS = Array.isArray(data) ? data : []; 
-          renderPublicList(); 
+        if (data && !data.error) {
+          ALL_JOBS = Array.isArray(data) ? data : [];
+          renderPublicList();
+        } else {
+          showNotification(data.error || "Failed to load jobs", "error");
         }
-      } catch (e) { 
-        document.getElementById('loader').innerHTML = "<p class='text-red-500 font-bold uppercase text-[10px]'>Connection Error</p>"; 
+      } catch (e) {
+        document.getElementById('loader').innerHTML = "<p class='text-red-500 font-bold uppercase text-[10px]'>Connection Error</p>";
       }
     }
 
     function renderPublicList() {
       const active = ALL_JOBS.filter(j => String(j.status).toLowerCase() === 'active');
       const container = document.getElementById('job-grid');
-      if (active.length === 0) { 
-        document.getElementById('no-jobs-state').classList.remove('hidden-view'); 
-        container.innerHTML = ''; 
-        return; 
+      if (active.length === 0) {
+        document.getElementById('no-jobs-state').classList.remove('hidden-view');
+        container.innerHTML = '';
+        return;
       }
       container.innerHTML = active.map(job => `
         <div class="odoo-card p-8 flex flex-col h-full cursor-pointer group" onclick="renderJobDetail('${job.id}')">
@@ -269,7 +262,7 @@
       const job = ALL_JOBS.find(j => String(j.id) === String(id));
       if (!job) return;
       const skills = job.skills ? job.skills.split(',').map(s => `<span class="skill-pill">${s.trim()}</span>`).join('') : '';
-      
+
       document.getElementById('job-detail-container').innerHTML = `
         <div class="mb-12 border-b border-gray-100 pb-12">
           <div class="flex flex-col md:flex-row justify-between items-start gap-8">
@@ -315,18 +308,18 @@
         const res = await fetch(`${SCRIPT_URL}?action=getApplications&token=${encodeURIComponent(ADMIN_TOKEN)}`);
         const data = await res.json();
         if (data.error === "Unauthorized") {
-          ADMIN_TOKEN = ""; 
+          ADMIN_TOKEN = "";
           sessionStorage.removeItem('raveone_token');
           if (isInitialLogin) errEl.classList.remove('hidden-view');
           else { showNotification("Session Expired", "error"); switchView('admin-login'); }
           return;
         }
         sessionStorage.setItem('raveone_token', ADMIN_TOKEN);
-        if (isInitialLogin) { 
-            errEl.classList.add('hidden-view'); 
-            document.getElementById('admin-menu').classList.remove('hidden-view'); 
-            document.getElementById('nav-login-btn').classList.add('hidden-view');
-            switchView('admin-candidates'); 
+        if (isInitialLogin) {
+          errEl.classList.add('hidden-view');
+          document.getElementById('admin-menu').classList.remove('hidden-view');
+          document.getElementById('nav-login-btn').classList.add('hidden-view');
+          switchView('admin-candidates');
         }
         table.innerHTML = data.map(c => `
           <tr class="hover:bg-gray-50 border-b">
@@ -340,18 +333,20 @@
             <td class="text-gray-400 font-bold text-[10px]">${c.date}</td>
           </tr>
         `).join('');
-      } catch (e) { table.innerHTML = `<tr><td colspan="8" class="text-center py-12 text-red-500">Sync Error</td></tr>`; }
+      } catch (e) {
+        table.innerHTML = `<tr><td colspan="8" class="text-center py-12 text-red-500">Sync Error</td></tr>`;
+      }
     }
 
-    function openApplyModal(id, title) { 
-        document.getElementById('app-job-id').value = id; 
-        document.getElementById('app-job-title').value = decodeURIComponent(title); 
-        document.getElementById('modal-apply').classList.remove('hidden-view'); 
+    function openApplyModal(id, title) {
+      document.getElementById('app-job-id').value = id;
+      document.getElementById('app-job-title').value = decodeURIComponent(title);
+      document.getElementById('modal-apply').classList.remove('hidden-view');
     }
-    
-    function closeApplyModal() { 
-        document.getElementById('modal-apply').classList.add('hidden-view'); 
-        document.getElementById('form-apply').reset(); 
+
+    function closeApplyModal() {
+      document.getElementById('modal-apply').classList.add('hidden-view');
+      document.getElementById('form-apply').reset();
     }
 
     function switchView(id) {
@@ -363,23 +358,23 @@
     }
 
     document.getElementById('form-apply').onsubmit = function(e) {
-      e.preventDefault(); 
-      const btn = document.getElementById('submit-btn'); 
+      e.preventDefault();
+      const btn = document.getElementById('submit-btn');
       const originalText = btn.innerText;
-      btn.innerText = "Submitting..."; 
+      btn.innerText = "Submitting...";
       btn.disabled = true;
 
-      const file = document.getElementById('resume-file').files[0]; 
+      const file = document.getElementById('resume-file').files[0];
       const reader = new FileReader();
       reader.onload = async function(f) {
         const payload = { resumeBase64: f.target.result };
         new FormData(e.target).forEach((v, k) => payload[k] = v);
-        payload.jobId = document.getElementById('app-job-id').value; 
+        payload.jobId = document.getElementById('app-job-id').value;
         payload.jobTitle = document.getElementById('app-job-title').value;
 
         try {
           const r = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
-          const res = await r.json(); 
+          const res = await r.json();
           if (res.success) { showNotification("Application Sent!"); closeApplyModal(); }
           else { showNotification("Error: " + res.message, "error"); }
         } catch (err) { showNotification("Network Error", "error"); }
