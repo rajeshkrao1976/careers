@@ -1,387 +1,469 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Careers | Raveone Consultants</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Careers | Raveone Consultants</title>
 
-  <!-- SEO & Brand Assets -->
-  <link rel="icon" type="image/png" href="https://media.licdn.com/dms/image/v2/D560BAQEPjP3aKt0lyg/company-logo_200_200/B56ZU2_QxhHEAM-/0/1740384308771/hiregrow_consultants_logo?e=1771459200&v=beta&t=lB1EaAdg4Jwoj7MnO_Gsy9HmVrascy0YTLkTN2ndvUg">
+    <!-- Google Site Verification -->
+    <meta name="google-site-verification" content="googlefd87621aff648b9a" />
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-    body { font-family: 'Inter', sans-serif; background-color: #FFFFFF; color: #1F2937; -webkit-font-smoothing: antialiased; }
-    .bg-brand { background-color: #714B67; }
-    .text-brand { color: #714B67; }
-    .border-brand { border-color: #714B67; }
-    .hidden-view { display: none !important; }
-    .odoo-card { border: 1px solid #E5E7EB; border-radius: 0px; background: #FFFFFF; transition: all 0.2s ease; }
-    .odoo-card:hover { border-color: #714B67; box-shadow: 0 4px 12px rgba(113, 75, 103, 0.08); }
-    .btn-brand { background-color: #714B67; color: white; border-radius: 0px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em; transition: all 0.2s; }
-    .btn-brand:hover { background-color: #5D3A53; }
-    .btn-brand:disabled { background-color: #9CA3AF; cursor: not-allowed; }
-    .skill-pill { background: #F3F4F6; color: #4B5563; padding: 2px 8px; font-size: 10px; font-weight: 700; border: 1px solid #E5E7EB; text-transform: uppercase; }
-    .formatted-text { line-height: 1.8; font-size: 0.95rem; white-space: normal; }
-    .formatted-text ul { list-style-type: disc; margin-left: 1.5rem; margin-top: 0.75rem; margin-bottom: 0.75rem; }
-    .formatted-text li { margin-bottom: 0.6rem; padding-left: 0.25rem; }
-    .formatted-text p { margin-bottom: 1rem; }
-    th { font-size: 10px; font-weight: 800; text-transform: uppercase; background: #F9FAFB; padding: 12px; border-bottom: 2px solid #E5E7EB; white-space: nowrap; }
-    td { font-size: 11px; padding: 12px; border-bottom: 1px solid #F3F4F6; }
-    @keyframes pulse-slow { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-    .animate-pulse-slow { animation: pulse-slow 3s infinite; }
-    #notification-toast { transition: transform 0.3s ease-out, opacity 0.3s ease-out; transform: translateY(100px); }
-    #notification-toast.show { transform: translateY(0); opacity: 1; }
-  </style>
+    <!-- SEO & Brand Assets -->
+    <link rel="icon" type="image/png" href="https://media.licdn.com/dms/image/v2/D560BAQEPjP3aKt0lyg/company-logo_200_200/B56ZU2_QxhHEAM-/0/1740384308771/hiregrow_consultants_logo?e=1771459200&v=beta&t=lB1EaAdg4Jwoj7MnO_Gsy9HmVrascy0YTLkTN2ndvUg">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #FFFFFF; color: #1F2937; -webkit-font-smoothing: antialiased; }
+        .bg-brand { background-color: #714B67; }
+        .text-brand { color: #714B67; }
+        .border-brand { border-color: #714B67; }
+        .hidden-view { display: none !important; }
+        .odoo-card { border: 1px solid #E5E7EB; border-radius: 0px; background: #FFFFFF; transition: all 0.2s ease; cursor: pointer; }
+        .odoo-card:hover { border-color: #714B67; box-shadow: 0 4px 12px rgba(113, 75, 103, 0.08); }
+        .btn-brand { background-color: #714B67; color: white; border-radius: 0px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em; transition: all 0.2s; }
+        .btn-brand:hover { background-color: #5D3A53; }
+        .btn-brand:disabled { background-color: #9CA3AF; cursor: not-allowed; }
+        .skill-pill { background: #F3F4F6; color: #4B5563; padding: 2px 8px; font-size: 10px; font-weight: 700; border: 1px solid #E5E7EB; text-transform: uppercase; }
+        .filter-input { border: 1px solid #E5E7EB; padding: 10px 12px; font-size: 13px; outline: none; transition: border 0.2s; }
+        .filter-input:focus { border-color: #714B67; }
+        .formatted-text { line-height: 1.8; font-size: 0.95rem; white-space: normal; color: #4B5563; }
+        .formatted-text ul { list-style-type: disc; margin-left: 1.5rem; margin-top: 0.75rem; margin-bottom: 0.75rem; }
+        .formatted-text li { margin-bottom: 0.6rem; }
+        th { font-size: 10px; font-weight: 800; text-transform: uppercase; background: #F9FAFB; padding: 12px; border-bottom: 2px solid #E5E7EB; }
+        #notification-toast { transition: transform 0.3s ease-out, opacity 0.3s ease-out; transform: translateY(100px); }
+        #notification-toast.show { transform: translateY(0); opacity: 1; }
+    </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
-  <!-- LOADING OVERLAY -->
-  <div id="loader" class="fixed inset-0 bg-white z-[999] flex flex-col items-center justify-center p-6 text-center">
-    <div class="w-10 h-10 border-4 border-gray-100 border-t-[#714B67] animate-spin mb-4"></div>
-    <img src="https://media.licdn.com/dms/image/v2/D560BAQEPjP3aKt0lyg/company-logo_200_200/B56ZU2_QxhHEAM-/0/1740384308771/hiregrow_consultants_logo?e=1771459200&v=beta&t=lB1EaAdg4Jwoj7MnO_Gsy9HmVrascy0YTLkTN2ndvUg" alt="Logo" class="h-16 mb-6 mx-auto">
-    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest animate-pulse-slow">Syncing Raveone Database...</p>
-  </div>
-
-  <!-- NOTIFICATION TOAST -->
-  <div id="notification-toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[1000] opacity-0 pointer-events-none">
-    <div id="notification-content" class="bg-gray-900 text-white px-6 py-3 shadow-2xl flex items-center gap-3">
-      <i id="notification-icon" data-lucide="info" class="w-4 h-4 text-brand"></i>
-      <span id="notification-text" class="text-[11px] font-bold uppercase tracking-widest">Message here</span>
+    <!-- LOADING OVERLAY -->
+    <div id="loader" class="fixed inset-0 bg-white z-[999] flex flex-col items-center justify-center p-6 text-center">
+        <div class="w-10 h-10 border-4 border-gray-100 border-t-[#714B67] animate-spin mb-4"></div>
+        <img src="https://media.licdn.com/dms/image/v2/D560BAQEPjP3aKt0lyg/company-logo_200_200/B56ZU2_QxhHEAM-/0/1740384308771/hiregrow_consultants_logo?e=1771459200&v=beta&t=lB1EaAdg4Jwoj7MnO_Gsy9HmVrascy0YTLkTN2ndvUg" alt="Logo" class="h-16 mb-6 mx-auto">
+        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest animate-pulse">Syncing Raveone Job Board...</p>
     </div>
-  </div>
 
-  <!-- NAVBAR -->
-  <nav class="bg-brand text-white sticky top-0 z-50 shadow-md">
-    <div class="max-w-7xl mx-auto px-6 h-24 flex justify-between items-center">
-      <div class="flex items-center gap-4 cursor-pointer" onclick="switchView('public-list')">
-        <div class="bg-white p-1 shadow-sm border border-brand/10">
-          <img src="https://media.licdn.com/dms/image/v2/D560BAQEPjP3aKt0lyg/company-logo_200_200/B56ZU2_QxhHEAM-/0/1740384308771/hiregrow_consultants_logo?e=1771459200&v=beta&t=lB1EaAdg4Jwoj7MnO_Gsy9HmVrascy0YTLkTN2ndvUg" alt="Logo" class="h-14 w-auto">
+    <!-- NOTIFICATION TOAST -->
+    <div id="notification-toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[1000] opacity-0 pointer-events-none">
+        <div id="notification-content" class="bg-gray-900 text-white px-6 py-3 shadow-2xl flex items-center gap-3">
+            <i id="notification-icon" data-lucide="info" class="w-4 h-4 text-brand"></i>
+            <span id="notification-text" class="text-[11px] font-bold uppercase tracking-widest">Message</span>
         </div>
-        <div class="flex flex-col">
-          <span class="font-extrabold tracking-tighter text-2xl leading-none">RAVEONE</span>
-          <span class="text-[10px] font-bold tracking-[0.3em] opacity-80 uppercase">Consultants</span>
-        </div>
-      </div>
-      <div class="flex gap-6 items-center">
-        <button onclick="switchView('public-list')" class="text-[11px] font-bold uppercase tracking-widest hover:text-white/70">Openings</button>
-        <div id="admin-menu" class="hidden-view flex gap-6 border-l border-white/20 pl-6 items-center">
-          <button onclick="switchView('admin-candidates')" class="text-[11px] font-bold uppercase tracking-widest hover:text-white/70">Applicants</button>
-          <button onclick="logoutAdmin()" class="text-white/50 hover:text-white transition"><i data-lucide="log-out" class="w-4 h-4"></i></button>
-        </div>
-        <button id="nav-login-btn" onclick="switchView('admin-login')" class="text-[11px] font-bold uppercase tracking-widest hover:text-white/70">Admin</button>
-      </div>
     </div>
-  </nav>
 
-  <main class="flex-grow">
-    <!-- VIEW: ADMIN LOGIN -->
-    <section id="view-admin-login" class="hidden-view max-w-md mx-auto py-32 px-6">
-      <div class="odoo-card p-10 bg-white shadow-xl">
-        <h2 class="text-xs font-black uppercase tracking-[0.2em] mb-6 text-gray-400 text-center">Admin Gatekeeper</h2>
-        <input type="password" id="admin-pass-input" placeholder="Enter Password" class="w-full border p-4 mb-4 outline-none focus:border-brand text-sm">
-        <button onclick="handleAdminLogin()" class="w-full bg-brand text-white py-4 text-[10px] font-bold uppercase tracking-widest">Login</button>
-        <p id="login-error" class="text-red-500 text-[10px] mt-4 font-bold uppercase hidden-view text-center">Access Denied</p>
-      </div>
-    </section>
-
-    <!-- VIEW: PUBLIC LIST -->
-    <section id="view-public-list" class="max-w-7xl mx-auto px-6 py-16">
-      <div class="mb-12 border-b border-gray-100 pb-8">
-        <h1 class="text-4xl font-black text-gray-900 tracking-tight uppercase tracking-widest">Current Roles</h1>
-      </div>
-      <div id="job-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-      <div id="no-jobs-state" class="hidden-view py-20 text-center border-2 border-dashed border-gray-100">
-        <p class="text-gray-400 font-medium italic">No active positions at this moment.</p>
-      </div>
-    </section>
-
-    <!-- VIEW: PUBLIC DETAIL -->
-    <section id="view-public-detail" class="hidden-view max-w-5xl mx-auto px-6 py-16">
-      <button onclick="switchView('public-list')" class="mb-8 flex items-center text-[10px] font-bold text-gray-400 hover:text-brand tracking-widest uppercase transition">
-        <i data-lucide="arrow-left" class="w-4 h-4 mr-2"></i> All Roles
-      </button>
-      <div id="job-detail-container"></div>
-    </section>
-
-    <!-- VIEW: ADMIN CANDIDATES -->
-    <section id="view-admin-candidates" class="hidden-view w-full px-6 py-12">
-      <div class="odoo-card overflow-hidden">
-        <div class="p-4 bg-gray-50 border-b flex justify-between items-center">
-          <h2 class="text-xs font-bold uppercase tracking-widest text-gray-500">Applicant Database</h2>
-          <button onclick="fetchCandidates()" class="text-brand text-[10px] font-bold flex items-center gap-2 uppercase tracking-widest border border-brand/20 px-4 py-2 hover:bg-brand/5 transition">
-            <i data-lucide="refresh-cw" class="w-3 h-3"></i> Sync Data
-          </button>
-        </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left">
-            <thead>
-              <tr>
-                <th>App ID</th>
-                <th>Candidate</th>
-                <th>Role</th>
-                <th>Exp (Tot/Rel)</th>
-                <th>CTC (Curr/Exp)</th>
-                <th>Notice & Loc</th>
-                <th>CV</th>
-                <th>Applied On</th>
-              </tr>
-            </thead>
-            <tbody id="candidates-table"></tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <!-- MODAL: APPLY -->
-  <div id="modal-apply" class="fixed inset-0 z-[100] hidden-view bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white w-full max-w-2xl p-10 odoo-card shadow-2xl overflow-y-auto max-h-[90vh]">
-      <div class="flex justify-between items-center mb-10 border-b pb-4">
-        <h3 class="text-xl font-bold uppercase tracking-widest">Apply for Role</h3>
-        <button onclick="closeApplyModal()" class="text-gray-400 hover:text-gray-600 transition"><i data-lucide="x"></i></button>
-      </div>
-      <form id="form-apply" class="space-y-6">
-        <input type="hidden" id="app-job-id">
-        <input type="hidden" id="app-job-title">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input name="name" placeholder="Full Name *" required class="border p-3 text-sm focus:border-brand outline-none">
-          <input name="email" type="email" placeholder="Email Address *" required class="border p-3 text-sm focus:border-brand outline-none">
-          <input name="phone" placeholder="Phone Number *" required class="border p-3 text-sm focus:border-brand outline-none">
-          <input name="location" placeholder="Current City *" required class="border p-3 text-sm focus:border-brand outline-none">
-          <input name="education" placeholder="Highest Education *" class="border p-3 text-sm focus:border-brand outline-none md:col-span-2">
-          <input name="totalExp" placeholder="Total Experience (Yrs) *" required class="border p-3 text-sm focus:border-brand outline-none">
-          <input name="relExp" placeholder="Relevant Experience (Yrs) *" required class="border p-3 text-sm focus:border-brand outline-none">
-          <input name="ctc" placeholder="Current CTC *" required class="border p-3 text-sm focus:border-brand outline-none">
-          <input name="expCtc" placeholder="Expected CTC *" required class="border p-3 text-sm focus:border-brand outline-none">
-          <input name="notice" placeholder="Notice Period *" required class="border p-3 text-sm md:col-span-2 focus:border-brand outline-none">
-        </div>
-        <div class="border-2 border-dashed border-gray-200 p-8 text-center bg-gray-50 hover:border-brand transition group">
-          <label class="cursor-pointer block">
-            <span class="text-[10px] font-bold text-gray-400 group-hover:text-brand uppercase tracking-widest mb-2 block">Upload CV (PDF ONLY)</span>
-            <input type="file" id="resume-file" accept=".pdf" required class="text-[10px] mx-auto block">
-          </label>
-        </div>
-        <button type="submit" id="submit-btn" class="w-full btn-brand py-4 text-xs">Submit Application</button>
-      </form>
-    </div>
-  </div>
-
-  <script>
-    // ========== REPLACE THIS WITH YOUR DEPLOYED WEB APP URL ==========
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzRK57ORGsPly1KaBp2NIukAcEcGLtEbHxtlOZfCP3c_EFEDyQJlxY6QAzMFTPLke5oPA/exec";
-    // =================================================================
-
-    let ALL_JOBS = [];
-    let ADMIN_TOKEN = sessionStorage.getItem('raveone_token') || "";
-
-    function showNotification(text, type = 'info') {
-      const toast = document.getElementById('notification-toast');
-      const textEl = document.getElementById('notification-text');
-      textEl.innerText = text;
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 4000);
-    }
-
-    function formatTextToHtml(text) {
-      if (!text) return '';
-      const lines = text.split(/\r?\n|•|-|–|\*|\s{2,}/).map(line => line.trim()).filter(line => line.length > 0);
-      if (lines.length > 1) {
-        return `<ul class="list-disc ml-5 space-y-2">${lines.map(line => `<li>${line}</li>`).join('')}</ul>`;
-      }
-      return `<p>${text}</p>`;
-    }
-
-    window.onload = function() {
-      lucide.createIcons();
-      if (ADMIN_TOKEN) {
-        document.getElementById('admin-menu').classList.remove('hidden-view');
-        document.getElementById('nav-login-btn').classList.add('hidden-view');
-      }
-      fetchJobs();
-    };
-
-    function handleAdminLogin() {
-      const pass = document.getElementById('admin-pass-input').value;
-      if (!pass) return;
-      ADMIN_TOKEN = pass;
-      fetchCandidates(true);
-    }
-
-    function logoutAdmin() {
-      ADMIN_TOKEN = "";
-      sessionStorage.removeItem('raveone_token');
-      document.getElementById('admin-menu').classList.add('hidden-view');
-      document.getElementById('nav-login-btn').classList.remove('hidden-view');
-      switchView('public-list');
-      showNotification("Logged out successfully");
-    }
-
-    async function fetchJobs() {
-      try {
-        const res = await fetch(`${SCRIPT_URL}?action=getJobs`);
-        const data = await res.json();
-        document.getElementById('loader').classList.add('hidden-view');
-        if (data && !data.error) {
-          ALL_JOBS = Array.isArray(data) ? data : [];
-          renderPublicList();
-        } else {
-          showNotification(data.error || "Failed to load jobs", "error");
-        }
-      } catch (e) {
-        document.getElementById('loader').innerHTML = "<p class='text-red-500 font-bold uppercase text-[10px]'>Connection Error</p>";
-      }
-    }
-
-    function renderPublicList() {
-      const active = ALL_JOBS.filter(j => String(j.status).toLowerCase() === 'active');
-      const container = document.getElementById('job-grid');
-      if (active.length === 0) {
-        document.getElementById('no-jobs-state').classList.remove('hidden-view');
-        container.innerHTML = '';
-        return;
-      }
-      container.innerHTML = active.map(job => `
-        <div class="odoo-card p-8 flex flex-col h-full cursor-pointer group" onclick="renderJobDetail('${job.id}')">
-          <div class="flex justify-between items-start mb-6">
-            <h3 class="text-xl font-bold group-hover:text-brand tracking-tight transition">${job.title}</h3>
-            <span class="text-[9px] font-black border px-2 py-1 uppercase tracking-widest">${job.type || 'Full Time'}</span>
-          </div>
-          <p class="text-xs text-gray-500 mb-8 font-medium flex items-center gap-1.5"><i data-lucide="map-pin" class="w-3.5 h-3.5"></i> ${job.location}</p>
-          <div class="mt-auto flex justify-between items-center text-[9px] font-bold text-gray-400 tracking-widest uppercase border-t pt-4">
-            <span>EXP: ${job.minExp}+ YRS</span>
-            <span class="text-brand font-black group-hover:underline">VIEW ROLE <i data-lucide="chevron-right" class="w-3 h-3 ml-0.5 inline"></i></span>
-          </div>
-        </div>
-      `).join('');
-      lucide.createIcons();
-    }
-
-    function renderJobDetail(id) {
-      const job = ALL_JOBS.find(j => String(j.id) === String(id));
-      if (!job) return;
-      const skills = job.skills ? job.skills.split(',').map(s => `<span class="skill-pill">${s.trim()}</span>`).join('') : '';
-
-      document.getElementById('job-detail-container').innerHTML = `
-        <div class="mb-12 border-b border-gray-100 pb-12">
-          <div class="flex flex-col md:flex-row justify-between items-start gap-8">
-            <div class="space-y-2">
-              <span class="text-[10px] font-black text-brand uppercase tracking-widest">${job.company || 'Raveone Consultants'}</span>
-              <h1 class="text-4xl font-black text-gray-900 tracking-tight leading-tight">${job.title}</h1>
-              <div class="flex flex-wrap gap-6 text-sm text-gray-500 font-medium pt-4">
-                <span class="flex items-center gap-1.5"><i data-lucide="map-pin" class="w-4 h-4 text-brand"></i> ${job.location}</span>
-                <span class="flex items-center gap-1.5"><i data-lucide="clock" class="w-4 h-4 text-brand"></i> ${job.type || 'Full Time'}</span>
-              </div>
+    <!-- NAVBAR -->
+    <nav class="bg-brand text-white sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+            <div class="flex items-center gap-4 cursor-pointer" onclick="handleHomeNavigation()">
+                <div class="bg-white p-1 shadow-sm">
+                    <img src="https://media.licdn.com/dms/image/v2/D560BAQEPjP3aKt0lyg/company-logo_200_200/B56ZU2_QxhHEAM-/0/1740384308771/hiregrow_consultants_logo?e=1771459200&v=beta&t=lB1EaAdg4Jwoj7MnO_Gsy9HmVrascy0YTLkTN2ndvUg" alt="Logo" class="h-10 w-auto">
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-extrabold tracking-tighter text-xl leading-none">RAVEONE</span>
+                    <span class="text-[9px] font-bold tracking-[0.2em] opacity-80 uppercase">Consultants</span>
+                </div>
             </div>
-            <button onclick="openApplyModal('${job.id}', '${encodeURIComponent(job.title)}')" class="btn-brand px-12 py-5 text-xs shadow-xl shadow-brand/10 w-full md:w-auto">Apply Now</button>
-          </div>
+            <div class="flex gap-6 items-center">
+                <button onclick="handleHomeNavigation()" class="text-[11px] font-bold uppercase tracking-widest hover:text-white/70">Openings</button>
+                <div id="admin-menu" class="hidden-view flex gap-6 border-l border-white/20 pl-6 items-center">
+                    <button onclick="switchView('admin-candidates')" class="text-[11px] font-bold uppercase tracking-widest hover:text-white/70">Applicants</button>
+                    <button onclick="logoutAdmin()" class="text-white/50 hover:text-white transition"><i data-lucide="log-out" class="w-4 h-4"></i></button>
+                </div>
+                <button id="nav-login-btn" onclick="switchView('admin-login')" class="text-[11px] font-bold uppercase tracking-widest hover:text-white/70">Admin</button>
+            </div>
         </div>
+    </nav>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 bg-gray-50 p-8 mb-12 border border-gray-100">
-          <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Job ID</p><p class="text-sm font-bold">${job.id}</p></div>
-          <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Salary Range</p><p class="text-sm font-bold text-emerald-600">${job.minSal} - ${job.maxSal}</p></div>
-          <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Exp Required</p><p class="text-sm font-bold">${job.minExp} - ${job.maxExp} Yrs</p></div>
-          <div class="md:col-span-1"><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Required Skills</p><div class="flex flex-wrap gap-2 pt-1">${skills}</div></div>
+    <main class="flex-grow">
+        <!-- VIEW: ADMIN LOGIN -->
+        <section id="view-admin-login" class="hidden-view max-w-md mx-auto py-32 px-6">
+            <div class="odoo-card p-10 bg-white shadow-xl text-center">
+                <h2 class="text-xs font-black uppercase tracking-[0.2em] mb-6 text-gray-400">Admin Login</h2>
+                <input type="password" id="admin-pass-input" placeholder="Password" class="w-full border p-4 mb-4 outline-none focus:border-brand text-sm">
+                <button onclick="handleAdminLogin()" class="w-full bg-brand text-white py-4 text-[10px] font-bold uppercase tracking-widest">Enter Portal</button>
+                <p id="login-error" class="text-red-500 text-[10px] mt-4 font-bold uppercase hidden-view">Invalid Credentials</p>
+            </div>
+        </section>
+
+        <!-- VIEW: PUBLIC LIST -->
+        <section id="view-public-list" class="max-w-7xl mx-auto px-6 py-12">
+            <div class="mb-10">
+                <h1 class="text-3xl font-black text-gray-900 uppercase tracking-widest mb-8">Careers</h1>
+                
+                <!-- SEARCH BAR -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-gray-50 p-6 border border-gray-200">
+                    <div class="md:col-span-2 relative">
+                        <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                        <input type="text" id="filter-search" oninput="applyFilters()" placeholder="Search titles or keywords..." class="filter-input w-full pl-10">
+                    </div>
+                    <div>
+                        <select id="filter-location" onchange="applyFilters()" class="filter-input w-full bg-white">
+                            <option value="">All Locations</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select id="filter-type" onchange="applyFilters()" class="filter-input w-full bg-white">
+                            <option value="">All Job Types</option>
+                            <option value="Full Time">Full Time</option>
+                            <option value="Contract">Contract</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="filter-results-count" class="mt-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest"></div>
+            </div>
+
+            <div id="job-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            <div id="no-jobs-state" class="hidden-view py-20 text-center border-2 border-dashed border-gray-100">
+                <p class="text-gray-400 font-medium italic">No matching roles found.</p>
+            </div>
+        </section>
+
+        <!-- VIEW: PUBLIC DETAIL -->
+        <section id="view-public-detail" class="hidden-view max-w-5xl mx-auto px-6 py-16">
+            <button onclick="handleHomeNavigation()" class="mb-8 flex items-center text-[10px] font-bold text-gray-400 hover:text-brand tracking-widest uppercase transition">
+                <i data-lucide="arrow-left" class="w-4 h-4 mr-2"></i> Back to Jobs
+            </button>
+            <div id="job-detail-container"></div>
+        </section>
+
+        <!-- VIEW: ADMIN CANDIDATES -->
+        <section id="view-admin-candidates" class="hidden-view w-full px-6 py-12">
+            <div class="odoo-card">
+                <div class="p-4 bg-gray-50 border-b flex justify-between items-center">
+                    <h2 class="text-xs font-bold uppercase tracking-widest text-gray-500">Applicant Tracking</h2>
+                    <button onclick="fetchCandidates()" class="text-brand text-[10px] font-bold flex items-center gap-2 border border-brand/20 px-4 py-2 hover:bg-brand/5">
+                        <i data-lucide="refresh-cw" class="w-3 h-3"></i> Sync
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Candidate</th>
+                                <th>Education</th>
+                                <th>Role</th>
+                                <th>Experience</th>
+                                <th>CTC</th>
+                                <th>Resume</th>
+                                <th>Applied</th>
+                            </tr>
+                        </thead>
+                        <tbody id="candidates-table"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- APPLY MODAL -->
+    <div id="modal-apply" class="fixed inset-0 z-[100] hidden-view bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-2xl p-10 odoo-card shadow-2xl overflow-y-auto max-h-[90vh]">
+            <div class="flex justify-between items-center mb-8 border-b pb-4">
+                <h3 class="text-xl font-bold uppercase tracking-widest">Apply Now</h3>
+                <button onclick="closeApplyModal()" class="text-gray-400 hover:text-gray-600"><i data-lucide="x"></i></button>
+            </div>
+            <form id="form-apply" class="space-y-6">
+                <input type="hidden" id="app-job-id">
+                <input type="hidden" id="app-job-title">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <input name="name" placeholder="Full Name *" required class="border p-3 text-sm focus:border-brand outline-none">
+                    <input name="email" type="email" placeholder="Email *" required class="border p-3 text-sm focus:border-brand outline-none">
+                    <input name="phone" placeholder="Phone *" required class="border p-3 text-sm focus:border-brand outline-none">
+                    <input name="location" placeholder="City *" required class="border p-3 text-sm focus:border-brand outline-none">
+                    <input name="education" placeholder="Highest Education *" required class="border p-3 text-sm md:col-span-2 focus:border-brand outline-none">
+                    <input name="totalExp" placeholder="Total Exp (Yrs) *" required class="border p-3 text-sm focus:border-brand outline-none">
+                    <input name="relExp" placeholder="Rel Exp (Yrs) *" required class="border p-3 text-sm focus:border-brand outline-none">
+                    <input name="ctc" placeholder="Current CTC *" required class="border p-3 text-sm focus:border-brand outline-none">
+                    <input name="expCtc" placeholder="Expected CTC *" required class="border p-3 text-sm focus:border-brand outline-none">
+                    <input name="notice" placeholder="Notice Period *" required class="border p-3 text-sm md:col-span-2 focus:border-brand outline-none">
+                </div>
+                <div class="border-2 border-dashed border-gray-200 p-8 text-center bg-gray-50 hover:border-brand group">
+                    <label class="cursor-pointer block">
+                        <span class="text-[10px] font-bold text-gray-400 group-hover:text-brand uppercase tracking-widest mb-2 block">Upload Resume (PDF)</span>
+                        <input type="file" id="resume-file" accept=".pdf" required class="text-[10px] mx-auto block">
+                    </label>
+                </div>
+                <button type="submit" id="submit-btn" class="w-full btn-brand py-4 text-xs">Send Application</button>
+            </form>
         </div>
+    </div>
 
-        <div class="space-y-12">
-          <section>
-            <h3 class="text-[11px] font-black text-gray-900 uppercase tracking-widest mb-6 border-l-4 border-brand pl-3">Role Description</h3>
-            <div class="text-gray-600 formatted-text">${formatTextToHtml(job.description)}</div>
-          </section>
-          <section>
-            <h3 class="text-[11px] font-black text-gray-900 uppercase tracking-widest mb-6 border-l-4 border-brand pl-3">Key Requirements</h3>
-            <div class="text-gray-600 formatted-text">${formatTextToHtml(job.requirements)}</div>
-          </section>
-        </div>
-      `;
-      switchView('public-detail');
-      lucide.createIcons();
-    }
+    <script>
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzmqAa95Icdu3cKMDG_8a6TGitpxMIuEF1bsqiJekRifitS-V0H30V4JcZGskhTZkOKiw/exec";
+        
+        let ALL_JOBS = [];
+        let FILTERED_JOBS = [];
+        let ADMIN_TOKEN = sessionStorage.getItem('raveone_token') || "";
 
-    async function fetchCandidates(isInitialLogin = false) {
-      const table = document.getElementById('candidates-table');
-      const errEl = document.getElementById('login-error');
-      table.innerHTML = '<tr><td colspan="8" class="text-center py-12 text-gray-400 text-[10px] font-bold uppercase animate-pulse">Authenticating...</td></tr>';
-      try {
-        const res = await fetch(`${SCRIPT_URL}?action=getApplications&token=${encodeURIComponent(ADMIN_TOKEN)}`);
-        const data = await res.json();
-        if (data.error === "Unauthorized") {
-          ADMIN_TOKEN = "";
-          sessionStorage.removeItem('raveone_token');
-          if (isInitialLogin) errEl.classList.remove('hidden-view');
-          else { showNotification("Session Expired", "error"); switchView('admin-login'); }
-          return;
+        function showNotification(text) {
+            const toast = document.getElementById('notification-toast');
+            document.getElementById('notification-text').innerText = text;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 4000);
         }
-        sessionStorage.setItem('raveone_token', ADMIN_TOKEN);
-        if (isInitialLogin) {
-          errEl.classList.add('hidden-view');
-          document.getElementById('admin-menu').classList.remove('hidden-view');
-          document.getElementById('nav-login-btn').classList.add('hidden-view');
-          switchView('admin-candidates');
+
+        function formatTextToHtml(text) {
+            if (!text) return 'Not provided';
+            const lines = text.split(/\r?\n|•|-|–|\*|\s{2,}/).map(l => l.trim()).filter(l => l.length > 0);
+            if (lines.length > 1) return `<ul class="list-disc ml-5 space-y-2">${lines.map(line => `<li>${line}</li>`).join('')}</ul>`;
+            return `<p>${text}</p>`;
         }
-        table.innerHTML = data.map(c => `
-          <tr class="hover:bg-gray-50 border-b">
-            <td class="font-mono text-[9px] text-gray-400">${c.appId}</td>
-            <td><div class="font-bold text-gray-900 leading-tight">${c.name}</div><div class="text-[10px] text-gray-400">${c.email}</div><div class="text-brand font-bold text-[10px]">${c.phone}</div></td>
-            <td><div class="font-semibold text-gray-700 leading-tight">${c.jobTitle}</div><div class="text-[9px] uppercase text-gray-400">${c.jobId}</div></td>
-            <td><div class="text-gray-600">Tot: ${c.totalExp}y</div><div class="text-gray-400">Rel: ${c.relExp}y</div></td>
-            <td><div class="text-emerald-700 font-bold">${c.expCtc}</div><div class="text-gray-400">${c.ctc}</div></td>
-            <td><div class="text-gray-700 font-medium">${c.notice}</div><div class="text-gray-400">${c.location}</div></td>
-            <td><a href="${c.resume}" target="_blank" class="bg-brand/10 text-brand px-3 py-1 font-black text-[9px] uppercase hover:bg-brand hover:text-white transition inline-block">View CV</a></td>
-            <td class="text-gray-400 font-bold text-[10px]">${c.date}</td>
-          </tr>
-        `).join('');
-      } catch (e) {
-        table.innerHTML = `<tr><td colspan="8" class="text-center py-12 text-red-500">Sync Error</td></tr>`;
-      }
-    }
 
-    function openApplyModal(id, title) {
-      document.getElementById('app-job-id').value = id;
-      document.getElementById('app-job-title').value = decodeURIComponent(title);
-      document.getElementById('modal-apply').classList.remove('hidden-view');
-    }
+        function injectJobSchema(job) {
+            try {
+                const oldSchema = document.getElementById('job-schema');
+                if (oldSchema) oldSchema.remove();
 
-    function closeApplyModal() {
-      document.getElementById('modal-apply').classList.add('hidden-view');
-      document.getElementById('form-apply').reset();
-    }
+                const schemaData = {
+                    "@context": "https://schema.org/",
+                    "@type": "JobPosting",
+                    "title": job.title,
+                    "description": job.description + " " + job.requirements,
+                    "identifier": { "@type": "PropertyValue", "name": "Raveone", "value": job.id },
+                    "datePosted": job.postedDate || new Date().toISOString().split('T')[0],
+                    "employmentType": job.type === "Contract" ? "CONTRACTOR" : "FULL_TIME",
+                    "hiringOrganization": { "@type": "Organization", "name": "Raveone Consultants" },
+                    "jobLocation": { "@type": "Place", "address": { "@type": "PostalAddress", "addressLocality": job.location, "addressCountry": "IN" } }
+                };
 
-    function switchView(id) {
-      document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden-view'));
-      const target = document.getElementById('view-' + id);
-      if (target) target.classList.remove('hidden-view');
-      if (id === 'admin-candidates' && ADMIN_TOKEN) fetchCandidates();
-      window.scrollTo(0, 0);
-    }
+                const script = document.createElement('script');
+                script.id = 'job-schema';
+                script.type = 'application/ld+json';
+                script.text = JSON.stringify(schemaData);
+                document.head.appendChild(script);
+            } catch(e) { console.error("Schema failed", e); }
+        }
 
-    document.getElementById('form-apply').onsubmit = function(e) {
-      e.preventDefault();
-      const btn = document.getElementById('submit-btn');
-      const originalText = btn.innerText;
-      btn.innerText = "Submitting...";
-      btn.disabled = true;
+        window.onload = function() {
+            lucide.createIcons();
+            fetchJobs();
+        };
 
-      const file = document.getElementById('resume-file').files[0];
-      const reader = new FileReader();
-      reader.onload = async function(f) {
-        const payload = { resumeBase64: f.target.result };
-        new FormData(e.target).forEach((v, k) => payload[k] = v);
-        payload.jobId = document.getElementById('app-job-id').value;
-        payload.jobTitle = document.getElementById('app-job-title').value;
+        async function fetchJobs() {
+            try {
+                const res = await fetch(`${SCRIPT_URL}?action=getJobs`);
+                const data = await res.json();
+                document.getElementById('loader').classList.add('hidden-view');
+                
+                if (data && !data.error) {
+                    ALL_JOBS = Array.isArray(data) ? data : [];
+                    populateFilters();
+                    
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const qId = urlParams.get('jobId');
+                    if (qId) {
+                        const target = ALL_JOBS.find(j => String(j.id).trim() === String(qId).trim());
+                        if (target) { renderJobDetail(qId); return; }
+                    }
+                    applyFilters();
+                }
+            } catch (e) {
+                document.getElementById('loader').innerHTML = "<p class='text-red-500 font-bold'>Connection Error. Refresh.</p>";
+            }
+        }
 
-        try {
-          const r = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
-          const res = await r.json();
-          if (res.success) { showNotification("Application Sent!"); closeApplyModal(); }
-          else { showNotification("Error: " + res.message, "error"); }
-        } catch (err) { showNotification("Network Error", "error"); }
-        finally { btn.innerText = originalText; btn.disabled = false; }
-      };
-      reader.readAsDataURL(file);
-    };
-  </script>
+        function populateFilters() {
+            const locs = [...new Set(ALL_JOBS.map(j => j.location))].sort();
+            const locSelect = document.getElementById('filter-location');
+            locs.forEach(l => { if(l) locSelect.innerHTML += `<option value="${l}">${l}</option>`; });
+        }
+
+        function applyFilters() {
+            const search = document.getElementById('filter-search').value.toLowerCase();
+            const loc = document.getElementById('filter-location').value;
+            const type = document.getElementById('filter-type').value;
+
+            FILTERED_JOBS = ALL_JOBS.filter(j => {
+                const mSearch = !search || j.title.toLowerCase().includes(search) || (j.skills && j.skills.toLowerCase().includes(search));
+                const mLoc = !loc || j.location === loc;
+                const mType = !type || j.type === type;
+                return mSearch && mLoc && mType && String(j.status).toLowerCase() === 'active';
+            });
+
+            document.getElementById('filter-results-count').innerText = `${FILTERED_JOBS.length} positions found`;
+            renderPublicList();
+        }
+
+        function renderPublicList() {
+            const container = document.getElementById('job-grid');
+            const empty = document.getElementById('no-jobs-state');
+            
+            if (FILTERED_JOBS.length === 0) {
+                empty.classList.remove('hidden-view');
+                container.innerHTML = '';
+                return;
+            }
+            
+            empty.classList.add('hidden-view');
+            container.innerHTML = FILTERED_JOBS.map(job => `
+                <div class="odoo-card p-8 flex flex-col h-full" onclick="renderJobDetail('${job.id}')">
+                    <div class="flex justify-between items-start mb-6">
+                        <h3 class="text-xl font-bold hover:text-brand transition">${job.title}</h3>
+                        <span class="text-[9px] font-black border px-2 py-1 uppercase tracking-widest">${job.type || 'Full Time'}</span>
+                    </div>
+                    <p class="text-xs text-gray-500 mb-8 font-medium flex items-center gap-1.5"><i data-lucide="map-pin" class="w-3.5 h-3.5"></i> ${job.location}</p>
+                    <div class="mt-auto flex justify-between items-center text-[9px] font-bold text-brand tracking-widest uppercase border-t pt-4">
+                        <span>EXP: ${job.minExp}+ YRS</span>
+                        <span>VIEW DETAIL <i data-lucide="chevron-right" class="w-3 h-3 ml-0.5 inline"></i></span>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function renderJobDetail(id) {
+            const job = ALL_JOBS.find(j => String(j.id).trim() === String(id).trim());
+            if (!job) return;
+
+            injectJobSchema(job);
+            
+            try {
+                const newUrl = window.location.origin + window.location.pathname + '?jobId=' + id;
+                window.history.pushState({ path: newUrl }, '', newUrl);
+            } catch(e) { console.warn("URL update blocked"); }
+
+            const skills = job.skills ? job.skills.split(',').map(s => `<span class="skill-pill">${s.trim()}</span>`).join('') : '';
+
+            document.getElementById('job-detail-container').innerHTML = `
+                <div class="mb-12 border-b border-gray-100 pb-12">
+                    <div class="flex flex-col md:flex-row justify-between items-start gap-8">
+                        <div class="space-y-2">
+                            <h1 class="text-4xl font-black text-gray-900 tracking-tight">${job.title}</h1>
+                            <div class="flex flex-wrap gap-6 text-sm text-gray-500 font-medium pt-4">
+                                <span class="flex items-center gap-1.5"><i data-lucide="map-pin" class="w-4 h-4 text-brand"></i> ${job.location}</span>
+                                <span class="flex items-center gap-1.5"><i data-lucide="briefcase" class="w-4 h-4 text-brand"></i> ${job.type}</span>
+                            </div>
+                        </div>
+                        <button id="detail-apply-btn" class="btn-brand px-12 py-5 text-xs shadow-xl shadow-brand/10 w-full md:w-auto">Apply Now</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 bg-gray-50 p-8 mb-12 border border-gray-100">
+                    <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Ref ID</p><p class="text-sm font-bold">${job.id}</p></div>
+                    <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Experience</p><p class="text-sm font-bold">${job.minExp} - ${job.maxExp} Yrs</p></div>
+                    <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Skills</p><div class="flex flex-wrap gap-2 pt-1">${skills || 'N/A'}</div></div>
+                </div>
+
+                <div class="space-y-12">
+                    <section>
+                        <h3 class="text-[11px] font-black uppercase tracking-widest mb-6 border-l-4 border-brand pl-3">Role Overview</h3>
+                        <div class="formatted-text">${formatTextToHtml(job.description)}</div>
+                    </section>
+                    <section>
+                        <h3 class="text-[11px] font-black uppercase tracking-widest mb-6 border-l-4 border-brand pl-3">Requirements</h3>
+                        <div class="formatted-text">${formatTextToHtml(job.requirements)}</div>
+                    </section>
+                </div>
+            `;
+            
+            document.getElementById('detail-apply-btn').onclick = () => openApplyModal(job.id, job.title);
+            
+            switchView('public-detail');
+            lucide.createIcons();
+        }
+
+        function openApplyModal(id, title) {
+            document.getElementById('app-job-id').value = id;
+            document.getElementById('app-job-title').value = title;
+            document.getElementById('modal-apply').classList.remove('hidden-view');
+        }
+
+        function handleHomeNavigation() {
+            try {
+                const cleanUrl = window.location.origin + window.location.pathname;
+                window.history.pushState({ path: cleanUrl }, '', cleanUrl);
+            } catch(e) {}
+            switchView('public-list');
+        }
+
+        function switchView(id) {
+            document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden-view'));
+            const target = document.getElementById('view-' + id);
+            if (target) target.classList.remove('hidden-view');
+            window.scrollTo(0, 0);
+        }
+
+        function closeApplyModal() {
+            document.getElementById('modal-apply').classList.add('hidden-view');
+            document.getElementById('form-apply').reset();
+        }
+
+        document.getElementById('form-apply').onsubmit = function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            btn.innerText = "Sending...";
+            btn.disabled = true;
+
+            const file = document.getElementById('resume-file').files[0];
+            const reader = new FileReader();
+            reader.onload = async function(f) {
+                const payload = { resumeBase64: f.target.result };
+                new FormData(e.target).forEach((v, k) => payload[k] = v);
+                payload.jobId = document.getElementById('app-job-id').value;
+                payload.jobTitle = document.getElementById('app-job-title').value;
+
+                try {
+                    const r = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+                    const res = await r.json();
+                    if (res.success) { showNotification("Success! We'll be in touch."); closeApplyModal(); }
+                    else showNotification("Error: " + res.message);
+                } catch (err) { showNotification("Network error. Try again."); }
+                finally { btn.innerText = "Send Application"; btn.disabled = false; }
+            };
+            reader.readAsDataURL(file);
+        };
+
+        function handleAdminLogin() {
+            const pass = document.getElementById('admin-pass-input').value;
+            if (!pass) return;
+            ADMIN_TOKEN = pass;
+            fetchCandidates(true);
+        }
+
+        function logoutAdmin() {
+            ADMIN_TOKEN = "";
+            sessionStorage.removeItem('raveone_token');
+            document.getElementById('admin-menu').classList.add('hidden-view');
+            document.getElementById('nav-login-btn').classList.remove('hidden-view');
+            switchView('public-list');
+        }
+
+        async function fetchCandidates(isLogin = false) {
+            const table = document.getElementById('candidates-table');
+            const err = document.getElementById('login-error');
+            table.innerHTML = '<tr><td colspan="8" class="text-center py-10 text-gray-400">Loading...</td></tr>';
+            try {
+                const res = await fetch(`${SCRIPT_URL}?action=getApplications&token=${encodeURIComponent(ADMIN_TOKEN)}`);
+                const data = await res.json();
+                if (data.error === "Unauthorized") {
+                    if (isLogin) err.classList.remove('hidden-view');
+                    else switchView('admin-login');
+                    return;
+                }
+                sessionStorage.setItem('raveone_token', ADMIN_TOKEN);
+                if (isLogin) {
+                    err.classList.add('hidden-view');
+                    document.getElementById('admin-menu').classList.remove('hidden-view');
+                    document.getElementById('nav-login-btn').classList.add('hidden-view');
+                    switchView('admin-candidates');
+                }
+                table.innerHTML = data.map(c => `
+                    <tr class="hover:bg-gray-50 border-b">
+                        <td class="font-mono text-[9px] text-gray-400">${c.appId}</td>
+                        <td><div class="font-bold text-gray-900">${c.name}</div><div class="text-[10px] text-gray-400">${c.email}</div></td>
+                        <td class="text-xs font-semibold text-brand">${c.education || 'N/A'}</td>
+                        <td class="text-xs font-medium">${c.jobTitle}</td>
+                        <td class="text-xs">${c.totalExp}y (${c.relExp}y rel)</td>
+                        <td class="text-xs text-emerald-600 font-bold">${c.expCtc}</td>
+                        <td><a href="${c.resume}" target="_blank" class="text-brand font-black text-[9px] uppercase hover:underline">Download</a></td>
+                        <td class="text-gray-400 font-bold text-[10px]">${c.date}</td>
+                    </tr>
+                `).join('');
+            } catch (e) { table.innerHTML = `<tr><td colspan="8" class="text-center py-10 text-red-500">Sync Failed</td></tr>`; }
+        }
+    </script>
 </body>
 </html>
