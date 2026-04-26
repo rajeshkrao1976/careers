@@ -28,9 +28,14 @@
         .skill-pill { background: #F3F4F6; color: #4B5563; padding: 2px 8px; font-size: 10px; font-weight: 700; border: 1px solid #E5E7EB; text-transform: uppercase; }
         .filter-input { border: 1px solid #E5E7EB; padding: 10px 12px; font-size: 13px; outline: none; transition: border 0.2s; }
         .filter-input:focus { border-color: #714B67; }
+        
+        /* Updated formatting styles */
         .formatted-text { line-height: 1.8; font-size: 0.95rem; white-space: normal; color: #4B5563; }
-        .formatted-text ul { list-style-type: disc; margin-left: 1.5rem; margin-top: 0.75rem; margin-bottom: 0.75rem; }
-        .formatted-text li { margin-bottom: 0.6rem; }
+        .formatted-text ul { list-style-type: disc; margin-left: 1.5rem; margin-top: 0.5rem; margin-bottom: 1rem; }
+        .formatted-text li { margin-bottom: 0.4rem; }
+        .formatted-text p { margin-bottom: 1rem; }
+        .formatted-text strong { color: #1F2937; font-weight: 700; }
+        
         th { font-size: 10px; font-weight: 800; text-transform: uppercase; background: #F9FAFB; padding: 12px; border-bottom: 2px solid #E5E7EB; }
         #notification-toast { transition: transform 0.3s ease-out, opacity 0.3s ease-out; transform: translateY(100px); }
         #notification-toast.show { transform: translateY(0); opacity: 1; }
@@ -205,11 +210,55 @@
             setTimeout(() => toast.classList.remove('show'), 4000);
         }
 
+        /**
+         * UPDATED: Better text formatting that respects full sentences
+         * and only creates lists when bullet markers are at the start of lines.
+         */
         function formatTextToHtml(text) {
             if (!text) return 'Not provided';
-            const lines = text.split(/\r?\n|•|-|–|\*|\s{2,}/).map(l => l.trim()).filter(l => l.length > 0);
-            if (lines.length > 1) return `<ul class="list-disc ml-5 space-y-2">${lines.map(line => `<li>${line}</li>`).join('')}</ul>`;
-            return `<p>${text}</p>`;
+            
+            // 1. Handle basic bolding (e.g. **Heading**)
+            let formatted = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            
+            // 2. Split by new lines to identify structure
+            const lines = formatted.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+            
+            if (lines.length === 0) return '<p>Not provided</p>';
+
+            let html = '';
+            let inList = false;
+
+            lines.forEach(line => {
+                // Look for common bullet point characters only at the START of the line
+                // Matches: • , - , * , – at start of line
+                const listMatch = line.match(/^[•\-\*–]\s*(.*)/);
+                
+                if (listMatch) {
+                    if (!inList) {
+                        html += '<ul class="list-disc ml-5 space-y-2">';
+                        inList = true;
+                    }
+                    html += `<li>${listMatch[1]}</li>`;
+                } else {
+                    if (inList) {
+                        html += '</ul>';
+                        inList = false;
+                    }
+                    
+                    // Handle Section Headers starting with ### or ending with :
+                    if (line.startsWith('###')) {
+                        html += `<h4 class="text-sm font-bold mt-6 mb-2 text-gray-800 uppercase tracking-wide border-b pb-1">${line.replace(/#/g, '').trim()}</h4>`;
+                    } else if (line.endsWith(':') && line.length < 50) {
+                        html += `<p class="mt-4 mb-2 font-bold text-gray-800">${line}</p>`;
+                    } else {
+                        html += `<p class="mb-3">${line}</p>`;
+                    }
+                }
+            });
+
+            if (inList) html += '</ul>';
+            
+            return html;
         }
 
         function injectJobSchema(job) {
