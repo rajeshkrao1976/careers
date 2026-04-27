@@ -7,6 +7,8 @@
 
     <!-- Google Site Verification -->
     <meta name="google-site-verification" content="googlefd87621aff648b9a" />
+    <meta name="description" id="meta-desc" content="Explore career opportunities at Raveone Consultants Bangalore.">
+    <link rel="canonical" id="canonical-link" href="https://rajeshkrao1976.github.io/careers/">
 
     <!-- SEO & Brand Assets -->
     <link rel="icon" type="image/png" href="https://media.licdn.com/dms/image/v2/D560BAQEPjP3aKt0lyg/company-logo_200_200/B56ZU2_QxhHEAM-/0/1740384308771/hiregrow_consultants_logo?e=1771459200&v=beta&t=lB1EaAdg4Jwoj7MnO_Gsy9HmVrascy0YTLkTN2ndvUg">
@@ -209,7 +211,10 @@
             setTimeout(() => toast.classList.remove('show'), 4000);
         }
 
-        // Helper to find key in object regardless of case or spaces
+        /**
+         * RESILIENT DATA FETCHER:
+         * Automatically finds the correct key regardless of spaces or case in Spreadsheet.
+         */
         function getVal(obj, targetKey) {
             if (!obj) return null;
             const normalizedTarget = targetKey.toLowerCase().replace(/\s/g, '');
@@ -246,29 +251,31 @@
             return html;
         }
 
+        /**
+         * GOOGLE JOBS COMPLIANCE: Mandatory JSON-LD Schema
+         */
         function injectJobSchema(job) {
             try {
                 const oldSchema = document.getElementById('job-schema');
                 if (oldSchema) oldSchema.remove();
 
                 const cleanTitle = (getVal(job, 'title') || "").replace(/J\d+/g, '').replace(/[\(\)\[\]\-\:\#]/g, ' ').trim();
+                
+                // Expiry: 60 days from posting or today
+                const postDate = getVal(job, 'postedDate') || new Date().toISOString().split('T')[0];
+                const expiryDate = new Date(new Date(postDate).getTime() + 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 
                 const schemaData = {
                     "@context": "https://schema.org/",
                     "@type": "JobPosting",
                     "title": cleanTitle,
-                    "description": (getVal(job, 'description') || "") + "\n\nRequirements:\n" + (getVal(job, 'requirements') || "") + (getVal(job, 'benefits') ? "\n\nBenefits:\n" + getVal(job, 'benefits') : ""),
-                    "identifier": {
-                        "@type": "PropertyValue",
-                        "name": getVal(job, 'company') || "Raveone Consultants",
-                        "value": getVal(job, 'id')
-                    },
-                    "datePosted": getVal(job, 'postedDate') || new Date().toISOString().split('T')[0],
-                    "validThrough": new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+                    "description": (getVal(job, 'description') || "") + "\n\nRequirements:\n" + (getVal(job, 'requirements') || ""),
+                    "datePosted": postDate,
+                    "validThrough": expiryDate,
                     "employmentType": getVal(job, 'type') === "Contract" ? "CONTRACTOR" : "FULL_TIME",
                     "hiringOrganization": {
                         "@type": "Organization",
-                        "name": getVal(job, 'company') || "Raveone Consultants",
+                        "name": "Raveone Consultants",
                         "sameAs": "https://www.raveone.in",
                         "logo": "https://media.licdn.com/dms/image/v2/D560BAQEPjP3aKt0lyg/company-logo_200_200/B56ZU2_QxhHEAM-/0/1740384308771/hiregrow_consultants_logo?e=1771459200&v=beta&t=lB1EaAdg4Jwoj7MnO_Gsy9HmVrascy0YTLkTN2ndvUg"
                     },
@@ -290,7 +297,14 @@
                             "maxValue": parseInt(getVal(job, 'maxSal')) || 30000,
                             "unitText": "MONTH"
                         }
-                    }
+                    },
+                    "identifier": {
+                        "@type": "PropertyValue",
+                        "name": "Raveone",
+                        "value": getVal(job, 'id')
+                    },
+                    "industry": getVal(job, 'industry'),
+                    "educationRequirements": getVal(job, 'education')
                 };
 
                 const script = document.createElement('script');
@@ -299,6 +313,20 @@
                 script.text = JSON.stringify(schemaData);
                 document.head.appendChild(script);
             } catch(e) { console.error("Schema injection error", e); }
+        }
+
+        /**
+         * SEO SIGNALS: Dynamic Title and Canonical Tags
+         */
+        function updatePageSEO(job) {
+            if (!job) return;
+            const title = `${getVal(job, 'title')} | Raveone Consultants Bangalore`;
+            const desc = `Hiring ${getVal(job, 'title')} in ${getVal(job, 'location')}. Exp: ${getVal(job, 'minExp')}+ Yrs. Apply now at Raveone Consultants.`;
+            const url = `https://rajeshkrao1976.github.io/careers/?jobId=${getVal(job, 'id')}`;
+
+            document.title = title;
+            document.getElementById('meta-desc').setAttribute('content', desc);
+            document.getElementById('canonical-link').setAttribute('href', url);
         }
 
         window.onload = function() {
@@ -311,11 +339,9 @@
                 const res = await fetch(`${SCRIPT_URL}?action=getJobs`);
                 const data = await res.json();
                 document.getElementById('loader').classList.add('hidden-view');
-                
                 if (data && !data.error) {
                     ALL_JOBS = Array.isArray(data) ? data : [];
                     populateFilters();
-                    
                     const urlParams = new URLSearchParams(window.location.search);
                     const qId = urlParams.get('jobId');
                     if (qId) {
@@ -324,9 +350,7 @@
                     }
                     applyFilters();
                 }
-            } catch (e) {
-                document.getElementById('loader').innerHTML = "<p class='text-red-500 font-bold'>Connection Error. Refresh.</p>";
-            }
+            } catch (e) { document.getElementById('loader').innerHTML = "<p class='text-red-500 font-bold'>Connection Error. Refresh.</p>"; }
         }
 
         function populateFilters() {
@@ -348,7 +372,6 @@
                 const mType = !type || getVal(j, 'type') === type;
                 return mSearch && mLoc && mType && String(getVal(j, 'status')).toLowerCase() === 'active';
             });
-
             document.getElementById('filter-results-count').innerText = `${FILTERED_JOBS.length} positions found`;
             renderPublicList();
         }
@@ -382,16 +405,16 @@
             const job = ALL_JOBS.find(j => String(getVal(j, 'id')).trim() === String(id).trim());
             if (!job) return;
 
+            // MANDATORY SEO & COMPLIANCE
             injectJobSchema(job);
+            updatePageSEO(job);
             
             try {
                 const newUrl = window.location.origin + window.location.pathname + '?jobId=' + id;
                 window.history.pushState({ path: newUrl }, '', newUrl);
-            } catch(e) { console.warn("URL update blocked"); }
+            } catch(e) {}
 
             const skillsList = getVal(job, 'skills') ? getVal(job, 'skills').split(',').map(s => `<span class="skill-pill">${s.trim()}</span>`).join('') : '';
-
-            // Clean experience units to prevent "Yrs Yrs"
             const minExpVal = String(getVal(job, 'minExp') || '0').replace(/yrs|yr/gi, '').trim();
             const maxExpVal = String(getVal(job, 'maxExp') || '').replace(/yrs|yr/gi, '').trim();
             const expStr = maxExpVal ? `${minExpVal} - ${maxExpVal} Yrs` : `${minExpVal}+ Yrs`;
@@ -435,11 +458,9 @@
                     <section>
                         <h3 class="text-[11px] font-black uppercase tracking-widest mb-6 border-l-4 border-brand pl-3">Benefits</h3>
                         <div class="formatted-text">${formatTextToHtml(getVal(job, 'benefits'))}</div>
-                    </section>
-                    ` : ''}
+                    </section>` : ''}
                 </div>
             `;
-            
             document.getElementById('detail-apply-btn').onclick = () => openApplyModal(getVal(job, 'id'), getVal(job, 'title'));
             switchView('public-detail');
             lucide.createIcons();
@@ -455,6 +476,7 @@
             try {
                 const cleanUrl = window.location.origin + window.location.pathname;
                 window.history.pushState({ path: cleanUrl }, '', cleanUrl);
+                document.title = "Careers | Raveone Consultants";
             } catch(e) {}
             switchView('public-list');
         }
@@ -476,7 +498,6 @@
             const btn = document.getElementById('submit-btn');
             btn.innerText = "Sending...";
             btn.disabled = true;
-
             const file = document.getElementById('resume-file').files[0];
             const reader = new FileReader();
             reader.onload = async function(f) {
@@ -484,7 +505,6 @@
                 new FormData(e.target).forEach((v, k) => payload[k] = v);
                 payload.jobId = document.getElementById('app-job-id').value;
                 payload.jobTitle = document.getElementById('app-job-title').value;
-
                 try {
                     const r = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
                     const res = await r.json();
@@ -534,14 +554,13 @@
                     <tr class="hover:bg-gray-50 border-b">
                         <td class="font-mono text-[9px] text-gray-400">${c.appId}</td>
                         <td><div class="font-bold text-gray-900">${c.name}</div><div class="text-[10px] text-gray-400">${c.email}</div></td>
-                        <td class="text-xs font-semibold text-brand">${getVal(c, 'education') || 'N/A'}</td>
+                        <td class="text-xs font-semibold text-brand">${c.education || 'N/A'}</td>
                         <td class="text-xs font-medium">${c.jobTitle}</td>
                         <td class="text-xs">${c.totalExp}y (${c.relExp}y rel)</td>
                         <td class="text-xs text-emerald-600 font-bold">${c.expCtc}</td>
                         <td><a href="${c.resume}" target="_blank" class="text-brand font-black text-[9px] uppercase hover:underline">Download</a></td>
                         <td class="text-gray-400 font-bold text-[10px]">${c.date}</td>
-                    </tr>
-                `).join('');
+                    </tr>`).join('');
             } catch (e) { table.innerHTML = `<tr><td colspan="8" class="text-center py-10 text-red-500">Sync Failed</td></tr>`; }
         }
     </script>
