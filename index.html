@@ -29,7 +29,6 @@
         .filter-input { border: 1px solid #E5E7EB; padding: 10px 12px; font-size: 13px; outline: none; transition: border 0.2s; }
         .filter-input:focus { border-color: #714B67; }
         
-        /* Updated formatting styles */
         .formatted-text { line-height: 1.8; font-size: 0.95rem; white-space: normal; color: #4B5563; }
         .formatted-text ul { list-style-type: disc; margin-left: 1.5rem; margin-top: 0.5rem; margin-bottom: 1rem; }
         .formatted-text li { margin-bottom: 0.4rem; }
@@ -210,42 +209,20 @@
             setTimeout(() => toast.classList.remove('show'), 4000);
         }
 
-        /**
-         * UPDATED: Better text formatting that respects full sentences
-         * and only creates lists when bullet markers are at the start of lines.
-         */
         function formatTextToHtml(text) {
             if (!text) return 'Not provided';
-            
-            // 1. Handle basic bolding (e.g. **Heading**)
-            let formatted = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            
-            // 2. Split by new lines to identify structure
+            let formatted = String(text).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             const lines = formatted.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
-            
             if (lines.length === 0) return '<p>Not provided</p>';
-
             let html = '';
             let inList = false;
-
             lines.forEach(line => {
-                // Look for common bullet point characters only at the START of the line
-                // Matches: • , - , * , – at start of line
                 const listMatch = line.match(/^[•\-\*–]\s*(.*)/);
-                
                 if (listMatch) {
-                    if (!inList) {
-                        html += '<ul class="list-disc ml-5 space-y-2">';
-                        inList = true;
-                    }
+                    if (!inList) { html += '<ul class="list-disc ml-5 space-y-2">'; inList = true; }
                     html += `<li>${listMatch[1]}</li>`;
                 } else {
-                    if (inList) {
-                        html += '</ul>';
-                        inList = false;
-                    }
-                    
-                    // Handle Section Headers starting with ### or ending with :
+                    if (inList) { html += '</ul>'; inList = false; }
                     if (line.startsWith('###')) {
                         html += `<h4 class="text-sm font-bold mt-6 mb-2 text-gray-800 uppercase tracking-wide border-b pb-1">${line.replace(/#/g, '').trim()}</h4>`;
                     } else if (line.endsWith(':') && line.length < 50) {
@@ -255,27 +232,64 @@
                     }
                 }
             });
-
             if (inList) html += '</ul>';
-            
             return html;
         }
 
+        /**
+         * UPDATED GOOGLE JOBS COMPLIANCE: Comprehensive JSON-LD Schema
+         */
         function injectJobSchema(job) {
             try {
                 const oldSchema = document.getElementById('job-schema');
                 if (oldSchema) oldSchema.remove();
 
+                // Title Clean up
+                const cleanTitle = job.title.replace(/J\d+/g, '').replace(/[\(\)\[\]\-\:\#]/g, ' ').trim();
+
                 const schemaData = {
                     "@context": "https://schema.org/",
                     "@type": "JobPosting",
-                    "title": job.title,
-                    "description": job.description + " " + job.requirements,
-                    "identifier": { "@type": "PropertyValue", "name": "Raveone", "value": job.id },
+                    "title": cleanTitle,
+                    "description": job.description + "\n\nRequirements:\n" + job.requirements + (job.benefits ? "\n\nBenefits:\n" + job.benefits : ""),
+                    "identifier": {
+                        "@type": "PropertyValue",
+                        "name": job.company || "Raveone Consultants",
+                        "value": job.id
+                    },
                     "datePosted": job.postedDate || new Date().toISOString().split('T')[0],
+                    "validThrough": new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
                     "employmentType": job.type === "Contract" ? "CONTRACTOR" : "FULL_TIME",
-                    "hiringOrganization": { "@type": "Organization", "name": "Raveone Consultants" },
-                    "jobLocation": { "@type": "Place", "address": { "@type": "PostalAddress", "addressLocality": job.location, "addressCountry": "IN" } }
+                    "hiringOrganization": {
+                        "@type": "Organization",
+                        "name": job.company || "Raveone Consultants",
+                        "sameAs": "https://www.raveone.in",
+                        "logo": "https://media.licdn.com/dms/image/v2/D560BAQEPjP3aKt0lyg/company-logo_200_200/B56ZU2_QxhHEAM-/0/1740384308771/hiregrow_consultants_logo?e=1771459200&v=beta&t=lB1EaAdg4Jwoj7MnO_Gsy9HmVrascy0YTLkTN2ndvUg"
+                    },
+                    "jobLocation": {
+                        "@type": "Place",
+                        "address": {
+                            "@type": "PostalAddress",
+                            "addressLocality": job.location || "Bangalore",
+                            "addressRegion": "KA",
+                            "addressCountry": "IN"
+                        }
+                    },
+                    "baseSalary": {
+                        "@type": "MonetaryAmount",
+                        "currency": "INR",
+                        "value": {
+                            "@type": "QuantitativeValue",
+                            "minValue": parseInt(job.minSal) || 25000,
+                            "maxValue": parseInt(job.maxSal) || 30000,
+                            "unitText": "MONTH"
+                        }
+                    },
+                    "occupationalCategory": job.category || "",
+                    "industry": job.industry || "",
+                    "totalJobOpenings": parseInt(job.positions) || 1,
+                    "jobBenefits": job.benefits || "",
+                    "educationRequirements": job.education || ""
                 };
 
                 const script = document.createElement('script');
@@ -283,7 +297,7 @@
                 script.type = 'application/ld+json';
                 script.text = JSON.stringify(schemaData);
                 document.head.appendChild(script);
-            } catch(e) { console.error("Schema failed", e); }
+            } catch(e) { console.error("Schema injection error", e); }
         }
 
         window.onload = function() {
@@ -339,13 +353,11 @@
         function renderPublicList() {
             const container = document.getElementById('job-grid');
             const empty = document.getElementById('no-jobs-state');
-            
             if (FILTERED_JOBS.length === 0) {
                 empty.classList.remove('hidden-view');
                 container.innerHTML = '';
                 return;
             }
-            
             empty.classList.add('hidden-view');
             container.innerHTML = FILTERED_JOBS.map(job => `
                 <div class="odoo-card p-8 flex flex-col h-full" onclick="renderJobDetail('${job.id}')">
@@ -363,6 +375,9 @@
             lucide.createIcons();
         }
 
+        /**
+         * ENHANCED UI: Displays all requested fields
+         */
         function renderJobDetail(id) {
             const job = ALL_JOBS.find(j => String(j.id).trim() === String(id).trim());
             if (!job) return;
@@ -384,16 +399,23 @@
                             <div class="flex flex-wrap gap-6 text-sm text-gray-500 font-medium pt-4">
                                 <span class="flex items-center gap-1.5"><i data-lucide="map-pin" class="w-4 h-4 text-brand"></i> ${job.location}</span>
                                 <span class="flex items-center gap-1.5"><i data-lucide="briefcase" class="w-4 h-4 text-brand"></i> ${job.type}</span>
+                                <span class="flex items-center gap-1.5"><i data-lucide="calendar" class="w-4 h-4 text-brand"></i> Posted: ${job.postedDate}</span>
                             </div>
                         </div>
-                        <button id="detail-apply-btn" class="btn-brand px-12 py-5 text-xs shadow-xl shadow-brand/10 w-full md:w-auto">Apply Now</button>
+                        <div class="flex flex-col gap-3 w-full md:w-auto">
+                            <button id="detail-apply-btn" class="btn-brand px-12 py-5 text-xs shadow-xl shadow-brand/10">Apply Now</button>
+                            <p class="text-[9px] font-bold text-gray-400 text-center uppercase tracking-widest">${job.positions || 1} Opening(s)</p>
+                        </div>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 bg-gray-50 p-8 mb-12 border border-gray-100">
+                <!-- META GRID: New Fields Added -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 bg-gray-50 p-8 mb-12 border border-gray-100">
                     <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Ref ID</p><p class="text-sm font-bold">${job.id}</p></div>
                     <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Experience</p><p class="text-sm font-bold">${job.minExp} - ${job.maxExp} Yrs</p></div>
-                    <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Skills</p><div class="flex flex-wrap gap-2 pt-1">${skills || 'N/A'}</div></div>
+                    <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Industry</p><p class="text-sm font-bold">${job.industry || 'N/A'}</p></div>
+                    <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Education</p><p class="text-sm font-bold">${job.education || 'N/A'}</p></div>
+                    <div class="col-span-2 md:col-span-4"><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Skills</p><div class="flex flex-wrap gap-2 pt-1">${skills || 'N/A'}</div></div>
                 </div>
 
                 <div class="space-y-12">
@@ -405,11 +427,16 @@
                         <h3 class="text-[11px] font-black uppercase tracking-widest mb-6 border-l-4 border-brand pl-3">Requirements</h3>
                         <div class="formatted-text">${formatTextToHtml(job.requirements)}</div>
                     </section>
+                    ${job.benefits ? `
+                    <section>
+                        <h3 class="text-[11px] font-black uppercase tracking-widest mb-6 border-l-4 border-brand pl-3">Benefits</h3>
+                        <div class="formatted-text">${formatTextToHtml(job.benefits)}</div>
+                    </section>
+                    ` : ''}
                 </div>
             `;
             
             document.getElementById('detail-apply-btn').onclick = () => openApplyModal(job.id, job.title);
-            
             switchView('public-detail');
             lucide.createIcons();
         }
