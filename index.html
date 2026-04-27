@@ -13,6 +13,9 @@
     <!-- SEO & Brand Assets -->
     <link rel="icon" type="image/png" href="https://media.licdn.com/dms/image/v2/D560BAQEPjP3aKt0lyg/company-logo_200_200/B56ZU2_QxhHEAM-/0/1740384308771/hiregrow_consultants_logo?e=1771459200&v=beta&t=lB1EaAdg4Jwoj7MnO_Gsy9HmVrascy0YTLkTN2ndvUg">
 
+    <!-- Pre-defined Schema Placeholder for Google Crawler -->
+    <script type="application/ld+json" id="job-schema">{}</script>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -211,10 +214,6 @@
             setTimeout(() => toast.classList.remove('show'), 4000);
         }
 
-        /**
-         * RESILIENT DATA FETCHER:
-         * Automatically finds the correct key regardless of spaces or case in Spreadsheet.
-         */
         function getVal(obj, targetKey) {
             if (!obj) return null;
             const normalizedTarget = targetKey.toLowerCase().replace(/\s/g, '');
@@ -252,16 +251,14 @@
         }
 
         /**
-         * GOOGLE JOBS COMPLIANCE: Mandatory JSON-LD Schema
+         * UPDATED SCHEMA INJECTION:
+         * Uses a static tag to be more detectable by Google's crawler.
          */
         function injectJobSchema(job) {
             try {
-                const oldSchema = document.getElementById('job-schema');
-                if (oldSchema) oldSchema.remove();
-
-                const cleanTitle = (getVal(job, 'title') || "").replace(/J\d+/g, '').replace(/[\(\)\[\]\-\:\#]/g, ' ').trim();
+                const schemaTag = document.getElementById('job-schema');
                 
-                // Expiry: 60 days from posting or today
+                const cleanTitle = (getVal(job, 'title') || "").replace(/J\d+/g, '').replace(/[\(\)\[\]\-\:\#]/g, ' ').trim();
                 const postDate = getVal(job, 'postedDate') || new Date().toISOString().split('T')[0];
                 const expiryDate = new Date(new Date(postDate).getTime() + 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 
@@ -269,10 +266,11 @@
                     "@context": "https://schema.org/",
                     "@type": "JobPosting",
                     "title": cleanTitle,
-                    "description": (getVal(job, 'description') || "") + "\n\nRequirements:\n" + (getVal(job, 'requirements') || ""),
+                    "description": (getVal(job, 'description') || "Explore this exciting career opportunity at Raveone Consultants.") + "\n\nRequirements:\n" + (getVal(job, 'requirements') || "Please contact us for more details."),
                     "datePosted": postDate,
                     "validThrough": expiryDate,
                     "employmentType": getVal(job, 'type') === "Contract" ? "CONTRACTOR" : "FULL_TIME",
+                    "directApply": true,
                     "hiringOrganization": {
                         "@type": "Organization",
                         "name": "Raveone Consultants",
@@ -302,22 +300,14 @@
                         "@type": "PropertyValue",
                         "name": "Raveone",
                         "value": getVal(job, 'id')
-                    },
-                    "industry": getVal(job, 'industry'),
-                    "educationRequirements": getVal(job, 'education')
+                    }
                 };
 
-                const script = document.createElement('script');
-                script.id = 'job-schema';
-                script.type = 'application/ld+json';
-                script.text = JSON.stringify(schemaData);
-                document.head.appendChild(script);
-            } catch(e) { console.error("Schema injection error", e); }
+                schemaTag.text = JSON.stringify(schemaData);
+                console.log("Job Posting Detected & Schema Injected.");
+            } catch(e) { console.error("Schema error", e); }
         }
 
-        /**
-         * SEO SIGNALS: Dynamic Title and Canonical Tags
-         */
         function updatePageSEO(job) {
             if (!job) return;
             const title = `${getVal(job, 'title')} | Raveone Consultants Bangalore`;
@@ -405,7 +395,6 @@
             const job = ALL_JOBS.find(j => String(getVal(j, 'id')).trim() === String(id).trim());
             if (!job) return;
 
-            // MANDATORY SEO & COMPLIANCE
             injectJobSchema(job);
             updatePageSEO(job);
             
