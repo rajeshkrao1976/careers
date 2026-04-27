@@ -7,17 +7,48 @@
 
     <!-- Google Site Verification -->
     <meta name="google-site-verification" content="googlefd87621aff648b9a" />
-    <meta name="description" id="meta-desc" content="Explore career opportunities at Raveone Consultants Bangalore.">
+    <meta name="description" id="meta-desc" content="Explore career opportunities at Raveone Consultants Bangalore. Specialized in Executive and Technical recruitment.">
     <link rel="canonical" id="canonical-link" href="https://rajeshkrao1976.github.io/careers/">
 
     <!-- SEO & Brand Assets -->
     <link rel="icon" type="image/png" href="https://media.licdn.com/dms/image/v2/D560BAQEPjP3aKt0lyg/company-logo_200_200/B56ZU2_QxhHEAM-/0/1740384308771/hiregrow_consultants_logo?e=1771459200&v=beta&t=lB1EaAdg4Jwoj7MnO_Gsy9HmVrascy0YTLkTN2ndvUg">
 
-    <!-- Pre-defined Schema Placeholder for Google Crawler -->
-    <script type="application/ld+json" id="job-schema">{}</script>
+    <!-- PRIMARY SCHEMA (Detectable even if XHR fails) -->
+    <script type="application/ld+json" id="org-schema">
+    {
+      "@context": "https://schema.org",
+      "@type": "RecruitmentAgency",
+      "name": "Raveone Consultants",
+      "url": "https://www.raveone.in",
+      "logo": "https://media.licdn.com/dms/image/v2/D560BAQEPjP3aKt0lyg/company-logo_200_200/B56ZU2_QxhHEAM-/0/1740384308771/hiregrow_consultants_logo?e=1771459200&v=beta&t=lB1EaAdg4Jwoj7MnO_Gsy9HmVrascy0YTLkTN2ndvUg",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Bangalore",
+        "addressRegion": "KA",
+        "addressCountry": "IN"
+      }
+    }
+    </script>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- JOB POSTING PLACEHOLDER (To solve 'No items detected') -->
+    <script type="application/ld+json" id="job-schema">
+    {
+      "@context": "https://schema.org/",
+      "@type": "JobPosting",
+      "title": "Careers at Raveone Consultants",
+      "description": "Explore various technical and executive job opportunities in Bangalore at Raveone Consultants.",
+      "hiringOrganization": {
+        "@type": "Organization",
+        "name": "Raveone Consultants",
+        "sameAs": "https://www.raveone.in"
+      }
+    }
+    </script>
+
+    <!-- STABLE CDNs (Fixes Redirection Errors) -->
+    <script src="https://cdn.tailwindcss.com/3.4.1"></script>
+    <script src="https://unpkg.com/lucide@0.321.0/dist/umd/lucide.min.js"></script>
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #FFFFFF; color: #1F2937; -webkit-font-smoothing: antialiased; }
@@ -320,12 +351,14 @@
         }
 
         window.onload = function() {
-            lucide.createIcons();
+            if (typeof lucide !== 'undefined') lucide.createIcons();
             fetchJobs();
         };
 
         async function fetchJobs() {
             try {
+                // IMPORTANT: Googlebot might fail here due to robots.txt, 
+                // which is why the static placeholder schema above is vital.
                 const res = await fetch(`${SCRIPT_URL}?action=getJobs`);
                 const data = await res.json();
                 document.getElementById('loader').classList.add('hidden-view');
@@ -388,13 +421,14 @@
                     </div>
                 </div>
             `).join('');
-            lucide.createIcons();
+            if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
         function renderJobDetail(id) {
             const job = ALL_JOBS.find(j => String(getVal(j, 'id')).trim() === String(id).trim());
             if (!job) return;
 
+            // MANDATORY SEO & COMPLIANCE
             injectJobSchema(job);
             updatePageSEO(job);
             
@@ -452,7 +486,7 @@
             `;
             document.getElementById('detail-apply-btn').onclick = () => openApplyModal(getVal(job, 'id'), getVal(job, 'title'));
             switchView('public-detail');
-            lucide.createIcons();
+            if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
         function openApplyModal(id, title) {
@@ -543,7 +577,7 @@
                     <tr class="hover:bg-gray-50 border-b">
                         <td class="font-mono text-[9px] text-gray-400">${c.appId}</td>
                         <td><div class="font-bold text-gray-900">${c.name}</div><div class="text-[10px] text-gray-400">${c.email}</div></td>
-                        <td class="text-xs font-semibold text-brand">${c.education || 'N/A'}</td>
+                        <td class="text-xs font-semibold text-brand">${getVal(c, 'education') || 'N/A'}</td>
                         <td class="text-xs font-medium">${c.jobTitle}</td>
                         <td class="text-xs">${c.totalExp}y (${c.relExp}y rel)</td>
                         <td class="text-xs text-emerald-600 font-bold">${c.expCtc}</td>
