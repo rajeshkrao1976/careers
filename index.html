@@ -209,6 +209,16 @@
             setTimeout(() => toast.classList.remove('show'), 4000);
         }
 
+        // Helper to find key in object regardless of case or spaces
+        function getVal(obj, targetKey) {
+            if (!obj) return null;
+            const normalizedTarget = targetKey.toLowerCase().replace(/\s/g, '');
+            for (let key in obj) {
+                if (key.toLowerCase().replace(/\s/g, '') === normalizedTarget) return obj[key];
+            }
+            return null;
+        }
+
         function formatTextToHtml(text) {
             if (!text) return 'Not provided';
             let formatted = String(text).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
@@ -241,24 +251,24 @@
                 const oldSchema = document.getElementById('job-schema');
                 if (oldSchema) oldSchema.remove();
 
-                const cleanTitle = job.title.replace(/J\d+/g, '').replace(/[\(\)\[\]\-\:\#]/g, ' ').trim();
+                const cleanTitle = (getVal(job, 'title') || "").replace(/J\d+/g, '').replace(/[\(\)\[\]\-\:\#]/g, ' ').trim();
 
                 const schemaData = {
                     "@context": "https://schema.org/",
                     "@type": "JobPosting",
                     "title": cleanTitle,
-                    "description": job.description + "\n\nRequirements:\n" + job.requirements + (job.benefits ? "\n\nBenefits:\n" + job.benefits : ""),
+                    "description": (getVal(job, 'description') || "") + "\n\nRequirements:\n" + (getVal(job, 'requirements') || "") + (getVal(job, 'benefits') ? "\n\nBenefits:\n" + getVal(job, 'benefits') : ""),
                     "identifier": {
                         "@type": "PropertyValue",
-                        "name": job.company || "Raveone Consultants",
-                        "value": job.id
+                        "name": getVal(job, 'company') || "Raveone Consultants",
+                        "value": getVal(job, 'id')
                     },
-                    "datePosted": job.postedDate || new Date().toISOString().split('T')[0],
+                    "datePosted": getVal(job, 'postedDate') || new Date().toISOString().split('T')[0],
                     "validThrough": new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-                    "employmentType": job.type === "Contract" ? "CONTRACTOR" : "FULL_TIME",
+                    "employmentType": getVal(job, 'type') === "Contract" ? "CONTRACTOR" : "FULL_TIME",
                     "hiringOrganization": {
                         "@type": "Organization",
-                        "name": job.company || "Raveone Consultants",
+                        "name": getVal(job, 'company') || "Raveone Consultants",
                         "sameAs": "https://www.raveone.in",
                         "logo": "https://media.licdn.com/dms/image/v2/D560BAQEPjP3aKt0lyg/company-logo_200_200/B56ZU2_QxhHEAM-/0/1740384308771/hiregrow_consultants_logo?e=1771459200&v=beta&t=lB1EaAdg4Jwoj7MnO_Gsy9HmVrascy0YTLkTN2ndvUg"
                     },
@@ -266,7 +276,7 @@
                         "@type": "Place",
                         "address": {
                             "@type": "PostalAddress",
-                            "addressLocality": job.location || "Bangalore",
+                            "addressLocality": getVal(job, 'location') || "Bangalore",
                             "addressRegion": "KA",
                             "addressCountry": "IN"
                         }
@@ -276,16 +286,11 @@
                         "currency": "INR",
                         "value": {
                             "@type": "QuantitativeValue",
-                            "minValue": parseInt(job.minSal) || 25000,
-                            "maxValue": parseInt(job.maxSal) || 30000,
+                            "minValue": parseInt(getVal(job, 'minSal')) || 25000,
+                            "maxValue": parseInt(getVal(job, 'maxSal')) || 30000,
                             "unitText": "MONTH"
                         }
-                    },
-                    "occupationalCategory": job.category || "",
-                    "industry": job.industry || "",
-                    "totalJobOpenings": parseInt(job.positions) || 1,
-                    "jobBenefits": job.benefits || "",
-                    "educationRequirements": job.education || ""
+                    }
                 };
 
                 const script = document.createElement('script');
@@ -314,7 +319,7 @@
                     const urlParams = new URLSearchParams(window.location.search);
                     const qId = urlParams.get('jobId');
                     if (qId) {
-                        const target = ALL_JOBS.find(j => String(j.id).trim() === String(qId).trim());
+                        const target = ALL_JOBS.find(j => String(getVal(j, 'id')).trim() === String(qId).trim());
                         if (target) { renderJobDetail(qId); return; }
                     }
                     applyFilters();
@@ -325,21 +330,23 @@
         }
 
         function populateFilters() {
-            const locs = [...new Set(ALL_JOBS.map(j => j.location))].sort();
+            const locs = [...new Set(ALL_JOBS.map(j => getVal(j, 'location')))].sort();
             const locSelect = document.getElementById('filter-location');
             locs.forEach(l => { if(l) locSelect.innerHTML += `<option value="${l}">${l}</option>`; });
         }
 
         function applyFilters() {
-            const search = document.getElementById('filter-search').value.toLowerCase();
+            const search = (document.getElementById('filter-search').value || "").toLowerCase();
             const loc = document.getElementById('filter-location').value;
             const type = document.getElementById('filter-type').value;
 
             FILTERED_JOBS = ALL_JOBS.filter(j => {
-                const mSearch = !search || j.title.toLowerCase().includes(search) || (j.skills && j.skills.toLowerCase().includes(search));
-                const mLoc = !loc || j.location === loc;
-                const mType = !type || j.type === type;
-                return mSearch && mLoc && mType && String(j.status).toLowerCase() === 'active';
+                const title = (getVal(j, 'title') || "").toLowerCase();
+                const skills = (getVal(j, 'skills') || "").toLowerCase();
+                const mSearch = !search || title.includes(search) || skills.includes(search);
+                const mLoc = !loc || getVal(j, 'location') === loc;
+                const mType = !type || getVal(j, 'type') === type;
+                return mSearch && mLoc && mType && String(getVal(j, 'status')).toLowerCase() === 'active';
             });
 
             document.getElementById('filter-results-count').innerText = `${FILTERED_JOBS.length} positions found`;
@@ -356,14 +363,14 @@
             }
             empty.classList.add('hidden-view');
             container.innerHTML = FILTERED_JOBS.map(job => `
-                <div class="odoo-card p-8 flex flex-col h-full" onclick="renderJobDetail('${job.id}')">
+                <div class="odoo-card p-8 flex flex-col h-full" onclick="renderJobDetail('${getVal(job, 'id')}')">
                     <div class="flex justify-between items-start mb-6">
-                        <h3 class="text-xl font-bold hover:text-brand transition">${job.title}</h3>
-                        <span class="text-[9px] font-black border px-2 py-1 uppercase tracking-widest">${job.type || 'Full Time'}</span>
+                        <h3 class="text-xl font-bold hover:text-brand transition">${getVal(job, 'title') || 'Untitled'}</h3>
+                        <span class="text-[9px] font-black border px-2 py-1 uppercase tracking-widest">${getVal(job, 'type') || 'Full Time'}</span>
                     </div>
-                    <p class="text-xs text-gray-500 mb-8 font-medium flex items-center gap-1.5"><i data-lucide="map-pin" class="w-3.5 h-3.5"></i> ${job.location}</p>
+                    <p class="text-xs text-gray-500 mb-8 font-medium flex items-center gap-1.5"><i data-lucide="map-pin" class="w-3.5 h-3.5"></i> ${getVal(job, 'location') || 'N/A'}</p>
                     <div class="mt-auto flex justify-between items-center text-[9px] font-bold text-brand tracking-widest uppercase border-t pt-4">
-                        <span>EXP: ${String(job.minExp).replace(/yrs|yr/gi, '').trim()}+ YRS</span>
+                        <span>EXP: ${String(getVal(job, 'minExp') || '0').replace(/yrs|yr/gi, '').trim()}+ YRS</span>
                         <span>VIEW DETAIL <i data-lucide="chevron-right" class="w-3 h-3 ml-0.5 inline"></i></span>
                     </div>
                 </div>
@@ -372,7 +379,7 @@
         }
 
         function renderJobDetail(id) {
-            const job = ALL_JOBS.find(j => String(j.id).trim() === String(id).trim());
+            const job = ALL_JOBS.find(j => String(getVal(j, 'id')).trim() === String(id).trim());
             if (!job) return;
 
             injectJobSchema(job);
@@ -382,58 +389,58 @@
                 window.history.pushState({ path: newUrl }, '', newUrl);
             } catch(e) { console.warn("URL update blocked"); }
 
-            const skills = job.skills ? job.skills.split(',').map(s => `<span class="skill-pill">${s.trim()}</span>`).join('') : '';
+            const skillsList = getVal(job, 'skills') ? getVal(job, 'skills').split(',').map(s => `<span class="skill-pill">${s.trim()}</span>`).join('') : '';
 
             // Clean experience units to prevent "Yrs Yrs"
-            const displayMinExp = String(job.minExp || '0').replace(/yrs|yr/gi, '').trim();
-            const displayMaxExp = String(job.maxExp || '').replace(/yrs|yr/gi, '').trim();
-            const expRange = displayMaxExp ? `${displayMinExp} - ${displayMaxExp} Yrs` : `${displayMinExp}+ Yrs`;
+            const minExpVal = String(getVal(job, 'minExp') || '0').replace(/yrs|yr/gi, '').trim();
+            const maxExpVal = String(getVal(job, 'maxExp') || '').replace(/yrs|yr/gi, '').trim();
+            const expStr = maxExpVal ? `${minExpVal} - ${maxExpVal} Yrs` : `${minExpVal}+ Yrs`;
 
             document.getElementById('job-detail-container').innerHTML = `
                 <div class="mb-12 border-b border-gray-100 pb-12">
                     <div class="flex flex-col md:flex-row justify-between items-start gap-8">
                         <div class="space-y-2">
-                            <h1 class="text-4xl font-black text-gray-900 tracking-tight">${job.title}</h1>
+                            <h1 class="text-4xl font-black text-gray-900 tracking-tight">${getVal(job, 'title') || 'Untitled'}</h1>
                             <div class="flex flex-wrap gap-6 text-sm text-gray-500 font-medium pt-4">
-                                <span class="flex items-center gap-1.5"><i data-lucide="map-pin" class="w-4 h-4 text-brand"></i> ${job.location}</span>
-                                <span class="flex items-center gap-1.5"><i data-lucide="briefcase" class="w-4 h-4 text-brand"></i> ${job.type}</span>
-                                <span class="flex items-center gap-1.5"><i data-lucide="calendar" class="w-4 h-4 text-brand"></i> Posted: ${job.postedDate}</span>
+                                <span class="flex items-center gap-1.5"><i data-lucide="map-pin" class="w-4 h-4 text-brand"></i> ${getVal(job, 'location') || 'N/A'}</span>
+                                <span class="flex items-center gap-1.5"><i data-lucide="briefcase" class="w-4 h-4 text-brand"></i> ${getVal(job, 'type') || 'Full Time'}</span>
+                                <span class="flex items-center gap-1.5"><i data-lucide="calendar" class="w-4 h-4 text-brand"></i> Posted: ${getVal(job, 'postedDate') || 'Recent'}</span>
                             </div>
                         </div>
                         <div class="flex flex-col gap-3 w-full md:w-auto">
                             <button id="detail-apply-btn" class="btn-brand px-12 py-5 text-xs shadow-xl shadow-brand/10">Apply Now</button>
-                            <p class="text-[9px] font-bold text-gray-400 text-center uppercase tracking-widest">${job.positions || 1} Opening(s)</p>
+                            <p class="text-[9px] font-bold text-gray-400 text-center uppercase tracking-widest">${getVal(job, 'positions') || 1} Opening(s)</p>
                         </div>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6 bg-gray-50 p-8 mb-12 border border-gray-100">
-                    <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Ref ID</p><p class="text-sm font-bold">${job.id}</p></div>
-                    <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Experience</p><p class="text-sm font-bold">${expRange}</p></div>
-                    <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Industry</p><p class="text-sm font-bold">${job.industry || job.Industry || 'N/A'}</p></div>
-                    <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Education</p><p class="text-sm font-bold">${job.education || job.Education || 'N/A'}</p></div>
-                    <div class="col-span-2 md:col-span-4"><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Skills</p><div class="flex flex-wrap gap-2 pt-1">${skills || 'N/A'}</div></div>
+                    <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Ref ID</p><p class="text-sm font-bold">${getVal(job, 'id') || 'N/A'}</p></div>
+                    <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Experience</p><p class="text-sm font-bold">${expStr}</p></div>
+                    <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Industry</p><p class="text-sm font-bold">${getVal(job, 'industry') || 'N/A'}</p></div>
+                    <div><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Education</p><p class="text-sm font-bold">${getVal(job, 'education') || 'N/A'}</p></div>
+                    <div class="col-span-2 md:col-span-4"><p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Skills</p><div class="flex flex-wrap gap-2 pt-1">${skillsList || 'N/A'}</div></div>
                 </div>
 
                 <div class="space-y-12">
                     <section>
                         <h3 class="text-[11px] font-black uppercase tracking-widest mb-6 border-l-4 border-brand pl-3">Role Overview</h3>
-                        <div class="formatted-text">${formatTextToHtml(job.description)}</div>
+                        <div class="formatted-text">${formatTextToHtml(getVal(job, 'description'))}</div>
                     </section>
                     <section>
                         <h3 class="text-[11px] font-black uppercase tracking-widest mb-6 border-l-4 border-brand pl-3">Requirements</h3>
-                        <div class="formatted-text">${formatTextToHtml(job.requirements)}</div>
+                        <div class="formatted-text">${formatTextToHtml(getVal(job, 'requirements'))}</div>
                     </section>
-                    ${job.benefits ? `
+                    ${getVal(job, 'benefits') ? `
                     <section>
                         <h3 class="text-[11px] font-black uppercase tracking-widest mb-6 border-l-4 border-brand pl-3">Benefits</h3>
-                        <div class="formatted-text">${formatTextToHtml(job.benefits)}</div>
+                        <div class="formatted-text">${formatTextToHtml(getVal(job, 'benefits'))}</div>
                     </section>
                     ` : ''}
                 </div>
             `;
             
-            document.getElementById('detail-apply-btn').onclick = () => openApplyModal(job.id, job.title);
+            document.getElementById('detail-apply-btn').onclick = () => openApplyModal(getVal(job, 'id'), getVal(job, 'title'));
             switchView('public-detail');
             lucide.createIcons();
         }
@@ -523,11 +530,11 @@
                     document.getElementById('nav-login-btn').classList.add('hidden-view');
                     switchView('admin-candidates');
                 }
-                table.innerHTML = data.map(c => `
+                table.innerHTML = (data || []).map(c => `
                     <tr class="hover:bg-gray-50 border-b">
                         <td class="font-mono text-[9px] text-gray-400">${c.appId}</td>
                         <td><div class="font-bold text-gray-900">${c.name}</div><div class="text-[10px] text-gray-400">${c.email}</div></td>
-                        <td class="text-xs font-semibold text-brand">${c.education || 'N/A'}</td>
+                        <td class="text-xs font-semibold text-brand">${getVal(c, 'education') || 'N/A'}</td>
                         <td class="text-xs font-medium">${c.jobTitle}</td>
                         <td class="text-xs">${c.totalExp}y (${c.relExp}y rel)</td>
                         <td class="text-xs text-emerald-600 font-bold">${c.expCtc}</td>
