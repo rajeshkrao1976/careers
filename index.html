@@ -13,11 +13,6 @@
     <!-- SEO & Brand Assets -->
     <link rel="icon" type="image/png" href="https://media.licdn.com/dms/image/v2/D560BAQEPjP3aKt0lyg/company-logo_200_200/B56ZU2_QxhHEAM-/0/1740384308771/hiregrow_consultants_logo?e=1771459200&v=beta&t=lB1EaAdg4Jwoj7MnO_Gsy9HmVrascy0YTLkTN2ndvUg">
 
-    <!-- 
-      GOOGLE JOBS STATIC INDEX:
-      Googlebot is blocked from your spreadsheet by robots.txt. 
-      Update the list below manually for your high-priority jobs to ensure Google indexes them.
-    -->
     <script type="application/ld+json" id="static-jobs-schema">
     [
       {
@@ -58,7 +53,6 @@
     ]
     </script>
 
-    <!-- DYNAMIC SCHEMA (Updated by JS for human users and rich results test) -->
     <script type="application/ld+json" id="job-schema">{}</script>
 
     <script src="https://cdn.tailwindcss.com/3.4.1"></script>
@@ -87,6 +81,9 @@
         
         #notification-toast { transition: transform 0.3s ease-out, opacity 0.3s ease-out; transform: translateY(100px); }
         #notification-toast.show { transform: translateY(0); opacity: 1; }
+
+        /* Custom Table Styling */
+        th { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: #9CA3AF; padding: 12px 16px; border-bottom: 1px solid #F3F4F6; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -183,7 +180,14 @@
                 <div class="overflow-x-auto">
                     <table class="w-full text-left">
                         <thead>
-                            <tr><th>Candidate</th><th>Education</th><th>Role</th><th>Experience</th><th>Resume</th><th>Applied</th></tr>
+                            <tr>
+                                <th>Candidate Info</th>
+                                <th>Role Details</th>
+                                <th>Experience</th>
+                                <th>Financials & Notice</th>
+                                <th>Resume</th>
+                                <th>Applied</th>
+                            </tr>
                         </thead>
                         <tbody id="candidates-table"></tbody>
                     </table>
@@ -206,7 +210,7 @@
                     <input name="name" placeholder="Full Name *" required class="border p-3 text-sm focus:border-brand outline-none">
                     <input name="email" type="email" placeholder="Email *" required class="border p-3 text-sm focus:border-brand outline-none">
                     <input name="phone" placeholder="Phone *" required class="border p-3 text-sm focus:border-brand outline-none">
-                    <input name="location" placeholder="City *" required class="border p-3 text-sm focus:border-brand outline-none">
+                    <input name="location" placeholder="Candidate Location (City) *" required class="border p-3 text-sm focus:border-brand outline-none">
                     <input name="education" placeholder="Highest Education *" required class="border p-3 text-sm md:col-span-2 focus:border-brand outline-none">
                     <input name="totalExp" placeholder="Total Exp (Yrs) *" required class="border p-3 text-sm focus:border-brand outline-none">
                     <input name="relExp" placeholder="Rel Exp (Yrs) *" required class="border p-3 text-sm focus:border-brand outline-none">
@@ -226,7 +230,7 @@
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzmqAa95Icdu3cKMDG_8a6TGitpxMIuEF1bsqiJekRifitS-V0H30V4JcZGskhTZkOKiw/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyO8MBYVSRh39EsNRfha_XBowKws3sS0vn2k9HpX2ut6coy4j-sYftaYu_J_G-XUbG2_A/exec";
         
         let ALL_JOBS = [];
         let FILTERED_JOBS = [];
@@ -239,7 +243,6 @@
             setTimeout(() => toast.classList.remove('show'), 4000);
         }
 
-        // Resilient Data Accessor
         function getVal(obj, targetKey) {
             if (!obj) return null;
             const normalizedTarget = targetKey.toLowerCase().replace(/\s/g, '');
@@ -302,8 +305,6 @@
                     }
                 };
                 schemaTag.text = JSON.stringify(schemaData);
-                
-                // Update SEO
                 document.title = `${cleanTitle} | Careers | Raveone`;
                 document.getElementById('meta-desc').content = `Job vacancy: ${cleanTitle} in ${getVal(job, 'location')}. Exp: ${getVal(job, 'minExp')}+ Yrs.`;
                 document.getElementById('canonical-link').href = window.location.href;
@@ -428,7 +429,9 @@
         }
 
         function handleHomeNavigation() {
-            window.location.search = ""; 
+            if (window.location.search) {
+                window.location.search = ""; 
+            }
             switchView('public-list');
         }
 
@@ -452,7 +455,7 @@
         document.getElementById('form-apply').onsubmit = function(e) {
             e.preventDefault();
             const btn = document.getElementById('submit-btn');
-            btn.innerText = "Sending...";
+            btn.innerText = "Sending Application...";
             btn.disabled = true;
 
             const file = document.getElementById('resume-file').files[0];
@@ -466,10 +469,18 @@
                 try {
                     const r = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
                     const res = await r.json();
-                    if (res.success) { showNotification("Success! We'll be in touch."); closeApplyModal(); }
-                    else showNotification("Error: " + res.message);
-                } catch (err) { showNotification("Network error. Try again."); }
-                finally { btn.innerText = "Send Application"; btn.disabled = false; }
+                    if (res.success) { 
+                        showNotification("Success! We'll be in touch."); 
+                        closeApplyModal(); 
+                    } else {
+                        showNotification("Error: " + res.message);
+                    }
+                } catch (err) { 
+                    showNotification("Network error. Try again."); 
+                } finally { 
+                    btn.innerText = "Send Application"; 
+                    btn.disabled = false; 
+                }
             };
             reader.readAsDataURL(file);
         };
@@ -485,7 +496,10 @@
             try {
                 const res = await fetch(`${SCRIPT_URL}?action=getApplications&token=${encodeURIComponent(ADMIN_TOKEN)}`);
                 const data = await res.json();
-                if (data.error === "Unauthorized") { switchView('admin-login'); return; }
+                if (data.error === "Unauthorized") { 
+                    switchView('admin-login'); 
+                    return; 
+                }
                 
                 sessionStorage.setItem('raveone_token', ADMIN_TOKEN);
                 if (isLogin) {
@@ -498,16 +512,31 @@
                     <tr class="hover:bg-gray-50 border-b">
                         <td class="p-4">
                             <div class="font-bold text-gray-900">${c.name}</div>
-                            <div class="text-[10px] text-gray-400">${c.email}</div>
+                            <div class="text-[10px] text-gray-400 font-bold uppercase">${c.location || 'N/A'}</div>
+                            <div class="text-[10px] text-gray-400 mt-1">${c.email} | ${c.phone}</div>
                         </td>
-                        <td class="p-4 text-xs font-semibold text-brand">${c.education || 'N/A'}</td>
-                        <td class="p-4 text-xs font-medium">${c.jobTitle}</td>
-                        <td class="p-4 text-xs">${c.totalExp}y (${c.relExp}y rel)</td>
-                        <td class="p-4"><a href="${c.resume}" target="_blank" class="text-brand font-bold text-[10px] uppercase hover:underline">Download</a></td>
+                        <td class="p-4">
+                            <div class="text-xs font-semibold text-brand">${c.jobTitle}</div>
+                            <div class="text-[10px] text-gray-400 uppercase font-bold">${c.education || 'N/A'}</div>
+                        </td>
+                        <td class="p-4 text-xs font-medium">
+                            <div>Total: ${c.totalExp}Y</div>
+                            <div class="text-[10px] text-gray-400">Rel: ${c.relExp}Y</div>
+                        </td>
+                        <td class="p-4">
+                            <div class="text-[10px] font-bold uppercase">C: ${c.ctc || 'N/A'}</div>
+                            <div class="text-[10px] font-bold uppercase text-brand">E: ${c.expCtc || 'N/A'}</div>
+                            <div class="text-[10px] text-gray-400 mt-1">Notice: ${c.notice || 'N/A'}</div>
+                        </td>
+                        <td class="p-4">
+                            <a href="${c.resume}" target="_blank" class="bg-gray-100 px-3 py-1.5 rounded text-brand font-bold text-[9px] uppercase hover:bg-brand hover:text-white transition">Resume</a>
+                        </td>
                         <td class="p-4 text-gray-400 font-bold text-[10px]">${c.date}</td>
                     </tr>
                 `).join('');
-            } catch (e) { table.innerHTML = `<tr><td colspan="6" class="text-center py-10 text-red-500">Sync Failed</td></tr>`; }
+            } catch (e) { 
+                table.innerHTML = `<tr><td colspan="6" class="text-center py-10 text-red-500">Sync Failed</td></tr>`; 
+            }
         }
 
         function logoutAdmin() {
